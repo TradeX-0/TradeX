@@ -1,0 +1,14 @@
+.graph-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    width: 100%;
+    height: 100vh; /* Full viewport height */
+  }
+  
+  .graph {
+    width: 80%; /* Adjust width as needed */
+    height: 80%; /* Adjust height as needed */
+    max-width: 1200px; /* Optional: max width */
+    max-height: 600px; /* Optional: max height */
+  }
