@@ -12,24 +12,27 @@ function Chart() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/stock-price/AAPL");
+        const response = await fetch("http://localhost:3000/api/stock-price/ETH-USD");
         const result = await response.json();
-        const chartData = result.quotes.map((data) => ({
+        const price = await fetch("http://localhost:3000/api/current-stock-price/ETH-USD")
+        const res = await price.json()
+        const newPrice = res.regularMarketPrice
+        const bad_chartData = result.quotes.map((data) => ({
           time: new Date(data.date).getTime() / 1000,
           open: data.open,
           high: data.high,
           low: data.low,
           close: data.close
         })).filter(item => item.open && item.high && item.low && item.close);;
-        chartData[chartData.length - 1]
-        const newchart = {
-          time : chartData[chartData.length - 1].time,
-          open : chartData[chartData.length - 2].close,
-          high: chartData[chartData.length - 1].high,
-          low: chartData[chartData.length - 1].low,
-          close: chartData[chartData.length - 1].close
-        }
-        setcurr(newchart)
+        const chartData = bad_chartData.slice(0, -1) 
+        chartData[chartData.length - 1] = {
+            time : chartData[chartData.length - 1].time,
+            open : chartData[chartData.length - 1].open,
+            high: chartData[chartData.length - 1].high,
+            low: chartData[chartData.length - 1].low,
+            close: newPrice,
+          }
+        setcurr(chartData)
         setData(chartData);
         console.log(chartData);
       } catch (error) {
@@ -46,7 +49,7 @@ function Chart() {
         try {
           if (chartContainerRef.current && !chart.current){
           const chartOptions = {
-            layout: { textColor: 'black', background: { type: 'solid', color: 'white' } },
+            layout: { textColor: 'white', background: { type: 'solid', color: '#010100' } },
           };
           chart.current = createChart(chartContainerRef.current, chartOptions);
           candleSeriesRef.current = chart.current.addCandlestickSeries({
@@ -61,14 +64,9 @@ function Chart() {
       }
       if (chartContainerRef.current && chart.current){
         console.log(curr)
-        candleSeriesRef.current.update(curr)
+        candleSeriesRef.current.setData(curr)
       }
-      return () => {
-        if (chart.current) {
-          chart.current.remove();
-          chart.current = null;
-        }
-      };
+      
     }, [data, curr]);
   
 

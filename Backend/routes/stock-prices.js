@@ -6,7 +6,7 @@ const router = Router();
 router.get('/stock-price/:symbol', async (req, res) => {
     try {
         const { symbol } = req.params;
-        const quote = await yahooFinance.chart(symbol, { period1: '2024-07-28', interval: '1m' });
+        const quote = await yahooFinance.chart(symbol, { period1: '2024-07-28', interval: '5m' });
         
         if (quote !== undefined) {
             res.json(quote)
