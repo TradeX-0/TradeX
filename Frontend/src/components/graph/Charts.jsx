@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { createChart } from 'lightweight-charts';
-import '../App.css'
+import './chart.css'
+import { useParams } from 'react-router-dom';
 
 function Chart() {
   const [data, setData] = useState(null);
@@ -8,13 +9,14 @@ function Chart() {
   const chartContainerRef = useRef(null);
   const candleSeriesRef = useRef(null);
   const chart = useRef(null);
+  const { stock } = useParams()
   
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/stock-price/ETH-USD");
+        const response = await fetch(`https://tradex-g497.onrender.com/api/stock-price/${ stock }`);
         const result = await response.json();
-        const price = await fetch("http://localhost:3000/api/current-stock-price/ETH-USD")
+        const price = await fetch(`https://tradex-g497.onrender.com/api/current-stock-price/${ stock }`)
         const res = await price.json()
         const newPrice = res.regularMarketPrice
         const bad_chartData = result.quotes.map((data) => ({
@@ -34,14 +36,12 @@ function Chart() {
           }
         setcurr(chartData)
         setData(chartData);
-        console.log(chartData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     
     fetchData();
-    console.log("hi")
   });
 
     useEffect(() => {
@@ -53,8 +53,8 @@ function Chart() {
           };
           chart.current = createChart(chartContainerRef.current, chartOptions);
           candleSeriesRef.current = chart.current.addCandlestickSeries({
-            upColor: '#26a69a', downColor: '#ef5350', borderVisible: true,
-            wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+            upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
+            wickUpColor: '#26a69a', wickDownColor: '#ef5350', 
         });
           candleSeriesRef.current.setData(data);
       }
@@ -63,7 +63,6 @@ function Chart() {
         }
       }
       if (chartContainerRef.current && chart.current){
-        console.log(curr)
         candleSeriesRef.current.setData(curr)
       }
       

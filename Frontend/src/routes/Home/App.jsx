@@ -1,11 +1,10 @@
 import './App.css'
-import Chart from './components/Charts'
 
 function App() {
   
   return (
     <>
-    <Chart />
+      <h1>Hello</h1>
     </>
   )
 }
