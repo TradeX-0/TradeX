@@ -14,9 +14,9 @@ function Chart() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://tradex-g497.onrender.com/api/stock-price/${ stock }`);
+        const response = await fetch(`http://localhost:3000/api/stock-price/${ stock }`);
         const result = await response.json();
-        const price = await fetch(`https://tradex-g497.onrender.com/api/current-stock-price/${ stock }`)
+        const price = await fetch(`http://localhost:3000/api/current-stock-price/${ stock }`)
         const res = await price.json()
         const newPrice = res.regularMarketPrice
         const bad_chartData = result.quotes.map((data) => ({
