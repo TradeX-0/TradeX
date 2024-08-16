@@ -1,7 +1,8 @@
 import './Stock.css'
 import Chart from '../../../components/graph/Charts'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import Search from '../../../components/search/Search';
 
 function Stock() {
   const [data, setData] = useState(null)
@@ -11,22 +12,24 @@ function Stock() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/stock-price/${ stock }`);
+        const response = await fetch(`http://localhost:3000/api/quotes/${ stock }`);
         const result = await response.json();
 
-        setData(result.meta.shortName);
+        setData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     
     fetchData();
-  });
+  }, [stock]);
   
   return (
     <>
+      <Search />
+      <Link to={-1}>back</Link>
       <div className='data'>
-        <p>{data}</p>
+        <p>{data?.shortName} ({data?.symbol})</p>
       </div>
       <Chart />
     </>

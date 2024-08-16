@@ -1,3 +1,4 @@
+import Search from '../../components/search/Search'
 import './Stocks.css'
 
 function Stocks() {
@@ -5,6 +6,7 @@ function Stocks() {
   return (
     <>
       <h1>Search for Stocks</h1>
+      <Search/>
     </>
   )
 }

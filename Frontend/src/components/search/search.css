@@ -1,0 +1,19 @@
+.text{
+    color: white;
+}
+/* search.css */
+
+.results {
+    margin: 20px 0; /* Optional: Adds margin around the results */
+}
+
+.results a {
+    display: block; /* Makes each link appear on a new line */
+    padding: 10px;  /* Optional: Adds padding for better spacing */
+    color: #007bff; /* Optional: Sets the link color */
+    text-decoration: none; /* Optional: Removes underline from links */
+}
+
+.results a:hover {
+    text-decoration: underline; /* Optional: Adds underline on hover */
+}
