@@ -26,8 +26,8 @@ function Stock() {
   
   return (
     <>
+      <Link to={"/stocks"}>back</Link><br/><br/>
       <Search />
-      <Link to={-1}>back</Link>
       <div className='data'>
         <p>{data?.shortName} ({data?.symbol})</p>
       </div>
