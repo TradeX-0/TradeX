@@ -49,7 +49,7 @@ function Chart() {
         try {
           if (chartContainerRef.current && !chart.current){
           const chartOptions = {
-            layout: { textColor: 'white', background: { type: 'solid', color: '#010100' } },
+            layout: { textColor: 'black', background: { type: 'solid', color: 'white' } },
           };
           chart.current = createChart(chartContainerRef.current, chartOptions);
           candleSeriesRef.current = chart.current.addCandlestickSeries({
