@@ -55,9 +55,7 @@ function Search() {
                         com.map((item, index) => (
                             item.shortname && item.quoteType != "OPTION" && item.quoteType != "ETF" ? <Link key={index} to={`/stocks/${item.symbol}`} onClick={clear}>{item.shortname} ({item.symbol})</Link> : null
                         ))
-                    ) : (
-                        <p></p>
-                    )}
+                    ) : null}
                 </div>
                 }
             </div>

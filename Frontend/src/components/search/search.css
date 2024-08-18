@@ -4,7 +4,11 @@
 /* search.css */
 
 .results {
-    margin: 20px 0; /* Optional: Adds margin around the results */
+    width: 30%;
+    margin: 10px 0px; /* Optional: Adds margin around the results */
+    z-index:99;
+    position: fixed;
+    background-color: aliceblue;
 }
 
 .results a {
