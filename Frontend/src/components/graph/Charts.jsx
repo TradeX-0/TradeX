@@ -19,21 +19,21 @@ function Chart() {
         const price = await fetch(`http://localhost:3000/api/current-stock-price/${ stock }`)
         const res = await price.json()
         const newPrice = res.regularMarketPrice
-        const bad_chartData = result.quotes.map((data) => ({
-          time: new Date(data.date).getTime() / 1000,
+        const chartData = result.quotes.map((data) => ({
+          time: new Date(new Date(data.date).toUTCString()).getTime() / 1000,
           open: data.open,
           high: data.high,
           low: data.low,
           close: data.close
-        })).filter(item => item.open && item.high && item.low && item.close);;
-        const chartData = bad_chartData.slice(0, -1) 
+        })).filter(item => item.open && item.high && item.low && item.close);
         chartData[chartData.length - 1] = {
             time : chartData[chartData.length - 1].time,
-            open : chartData[chartData.length - 1].open,
+            open : chartData[chartData.length - 2].close,
             high: chartData[chartData.length - 1].high,
             low: chartData[chartData.length - 1].low,
             close: newPrice,
           }
+          console.log(chartData)
         setcurr(chartData)
         setData(chartData);
       } catch (error) {
@@ -50,6 +50,10 @@ function Chart() {
           if (chartContainerRef.current && !chart.current){
           const chartOptions = {
             layout: { textColor: 'black', background: { type: 'solid', color: 'white' } },
+            timeScale:{
+              timeVisible: true,
+              secondsVisible: true,
+            }
           };
           chart.current = createChart(chartContainerRef.current, chartOptions);
           candleSeriesRef.current = chart.current.addCandlestickSeries({
@@ -68,7 +72,6 @@ function Chart() {
       
     }, [data, curr]);
   
-
   return (
     <>
       <div className="graph-container">

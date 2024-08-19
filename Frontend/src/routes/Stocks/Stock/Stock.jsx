@@ -28,9 +28,11 @@ function Stock() {
     <>
       <Link to={"/stocks"}>back</Link><br/><br/>
       <Search />
-      <div className='data'>
-        <p>{data?.shortName} ({data?.symbol})</p>
-      </div>
+      {data == null ? <p>Loading..</p> :
+        <div className='data'>
+          <p>{data?.shortName} ({data?.symbol})</p>
+        </div>
+      }
       <Chart />
     </>
   )
