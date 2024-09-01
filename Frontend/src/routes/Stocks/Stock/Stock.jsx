@@ -3,9 +3,11 @@ import Chart from '../../../components/graph/Charts'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
 import Search from '../../../components/search/Search';
+import getSymbolFromCurrency from 'currency-symbol-map'
 
 function Stock() {
   const [data, setData] = useState(null)
+  const [price, setPrice] = useState(null)
 
   const { stock } = useParams()
 
@@ -16,21 +18,24 @@ function Stock() {
         const result = await response.json();
 
         setData(result);
+        setPrice(result.regularMarketPrice)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
     
     fetchData();
-  }, [stock]);
+  });
+  const symbol = getSymbolFromCurrency(data?.currency)
   
   return (
     <>
-      <Link to={"/stocks"}>back</Link><br/><br/>
       <Search />
+      <Link to={"/stocks"}>back</Link><br/><br/>
       {data == null ? <p>Loading..</p> :
         <div className='data'>
           <p>{data?.shortName} ({data?.symbol})</p>
+          <h2>{symbol} {Math.round(price * 100)/100}</h2>
         </div>
       }
       <Chart />

@@ -5,16 +5,15 @@ import { useParams } from 'react-router-dom';
 
 function Chart() {
   const [data, setData] = useState(null);
-  const [curr, setcurr] = useState(null);
   const chartContainerRef = useRef(null);
   const candleSeriesRef = useRef(null);
   const chart = useRef(null);
-  const { stock } = useParams()
+  const { stock, interval } = useParams()
   
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/stock-price/${ stock }`);
+        const response = await fetch(`http://localhost:3000/api/stock-price/${ stock }/${interval}`);
         const result = await response.json();
         const price = await fetch(`http://localhost:3000/api/current-stock-price/${ stock }`)
         const res = await price.json()
@@ -33,8 +32,6 @@ function Chart() {
             low: chartData[chartData.length - 1].low,
             close: newPrice,
           }
-          console.log(chartData)
-        setcurr(chartData)
         setData(chartData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -67,10 +64,23 @@ function Chart() {
         }
       }
       if (chartContainerRef.current && chart.current){
-        candleSeriesRef.current.setData(curr)
+        if (chartContainerRef.current && !chart.current){  
+          candleSeriesRef.current.setData(data)
+        }  
       }
       
-    }, [data, curr]);
+    }, [data]);
+
+    useEffect(()=>{
+      return () => {
+        if (chart.current) {
+          chart.current.remove();
+          chart.current = null;
+          candleSeriesRef.current = null;
+        }
+      };
+    }, [stock, interval])
+
   
   return (
     <>
