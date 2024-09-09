@@ -1,13 +1,14 @@
-import jwt from "jsonwebtoken"
-import "dotenv/config"
 
-const getUser = (token) => {
-    if(!token) return null;
-    return jwt.verify(token, process.env.JWT_SECRET)
+
+export const getUser = async(token) => {
+    if (!token) return null;
+
+    try {
+        const user = await fetch(`http://localhost:3000/api/getuser/${token}`);
+        return user.json()
+    } catch (error) {
+        return null; // Return null if token verification fails
+    }
 }
 
 
-
-module.exports = {
-    getUser,
-}

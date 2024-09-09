@@ -8,13 +8,13 @@
     margin: 10px 0px; /* Optional: Adds margin around the results */
     z-index:99;
     position: fixed;
-    background-color: aliceblue;
+    background-color: #20272e;
 }
 
 .results a {
     display: block; /* Makes each link appear on a new line */
     padding: 10px;  /* Optional: Adds padding for better spacing */
-    color: #007bff; /* Optional: Sets the link color */
+    color: white; /* Optional: Sets the link color */
     text-decoration: none; /* Optional: Removes underline from links */
 }
 

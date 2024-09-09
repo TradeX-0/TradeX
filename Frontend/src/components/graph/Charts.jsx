@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react';
 import { createChart } from 'lightweight-charts';
-import './chart.css'
+import './chart.css';
 import { useParams } from 'react-router-dom';
 
 function Chart() {
@@ -8,16 +8,25 @@ function Chart() {
   const chartContainerRef = useRef(null);
   const candleSeriesRef = useRef(null);
   const chart = useRef(null);
-  const { stock, interval } = useParams()
-  
+  const { stock, interval } = useParams();
+
+  // Fetch data effect
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/stock-price/${ stock }/${interval}`);
+        const response = await fetch(`http://localhost:3000/api/stock-price/${stock}/${interval}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch stock price data');
+        }
         const result = await response.json();
-        const price = await fetch(`http://localhost:3000/api/current-stock-price/${ stock }`)
-        const res = await price.json()
-        const newPrice = res.regularMarketPrice
+        
+        const priceResponse = await fetch(`http://localhost:3000/api/current-stock-price/${stock}`);
+        if (!priceResponse.ok) {
+          throw new Error('Failed to fetch current stock price');
+        }
+        const priceData = await priceResponse.json();
+        const newPrice = priceData.regularMarketPrice;
+
         const chartData = result.quotes.map((data) => ({
           time: new Date(new Date(data.date).toUTCString()).getTime() / 1000,
           open: data.open,
@@ -25,29 +34,35 @@ function Chart() {
           low: data.low,
           close: data.close
         })).filter(item => item.open && item.high && item.low && item.close);
-        chartData[chartData.length - 1] = {
-            time : chartData[chartData.length - 1].time,
-            open : chartData[chartData.length - 2].close,
+
+        // Update the last data point with the new price
+        if (chartData.length > 1) {
+          chartData[chartData.length - 1] = {
+            time: chartData[chartData.length - 1].time,
+            open: chartData[chartData.length - 2].close,
             high: chartData[chartData.length - 1].high,
             low: chartData[chartData.length - 1].low,
             close: newPrice,
-          }
+          };
+        }
+
         setData(chartData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-    
-    fetchData();
-  });
 
-    useEffect(() => {
-      if (data != null && chartContainerRef.current) {
-        try {
-          if (chartContainerRef.current && !chart.current){
+    fetchData();
+  }); // Run fetchData when stock or interval changes
+
+  // Initialize and update chart
+  useEffect(() => {
+    if (data && chartContainerRef.current) {
+      try {
+        if (!chart.current) {
           const chartOptions = {
-            layout: { textColor: 'black', background: { type: 'solid', color: 'white' } },
-            timeScale:{
+            layout: { textColor: 'white', background: { type: 'solid', color: '#1d232a' } },
+            timeScale: {
               timeVisible: true,
               secondsVisible: true,
             }
@@ -55,40 +70,32 @@ function Chart() {
           chart.current = createChart(chartContainerRef.current, chartOptions);
           candleSeriesRef.current = chart.current.addCandlestickSeries({
             upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
-            wickUpColor: '#26a69a', wickDownColor: '#ef5350', 
-        });
-          candleSeriesRef.current.setData(data);
-      }
-        } catch (error) {
-          throw error
+            wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+          });
         }
+        candleSeriesRef.current.setData(data); // Only set data if it exists
+      } catch (error) {
+        console.error('Error setting up chart:', error);
       }
-      if (chartContainerRef.current && chart.current){
-        if (chartContainerRef.current && !chart.current){  
-          candleSeriesRef.current.setData(data)
-        }  
+    }
+  }, [data]);
+
+  // Cleanup on component unmount or when stock/interval changes
+  useEffect(() => {
+    return () => {
+      if (chart.current) {
+        chart.current.remove();
+        chart.current = null;
+        candleSeriesRef.current = null; // Reset candle series reference
       }
-      
-    }, [data]);
+    };
+  }, [stock, interval]);
 
-    useEffect(()=>{
-      return () => {
-        if (chart.current) {
-          chart.current.remove();
-          chart.current = null;
-          candleSeriesRef.current = null;
-        }
-      };
-    }, [stock, interval])
-
-  
   return (
-    <>
-      <div className="graph-container">
-        <div ref={chartContainerRef} className="graph"  />
-      </div>
-    </>
-  )
+    <div className="graph-container">
+      <div ref={chartContainerRef} className="graph" />
+    </div>
+  );
 }
 
-export default Chart
+export default Chart;

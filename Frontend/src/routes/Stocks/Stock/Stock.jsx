@@ -1,8 +1,8 @@
 import './Stock.css'
 import Chart from '../../../components/graph/Charts'
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom';
-import Search from '../../../components/search/Search';
+import { useParams } from 'react-router-dom';
+import Navbar from "../../../components/navbar/Navbar"
 import getSymbolFromCurrency from 'currency-symbol-map'
 
 function Stock() {
@@ -30,15 +30,17 @@ function Stock() {
   
   return (
     <>
-      <Search />
-      <Link to={"/stocks"}>back</Link><br/><br/>
-      {data == null ? <p>Loading..</p> :
+      <Navbar />
+      {data == null ? 
+        <p className='loading'>Loading..</p> : 
         <div className='data'>
           <p>{data?.shortName} ({data?.symbol})</p>
-          <h2>{symbol} {Math.round(price * 100)/100}</h2>
+          <h2>~ {symbol} {Math.round(price * 100)/100}</h2>
         </div>
       }
+
       <Chart />
+      
     </>
   )
 }

@@ -1,0 +1,33 @@
+/* Container for the data */
+.data {
+    background-color: #1d232a; /* Light background color for contrast */
+    border: 1px solid #ddd; /* Light border for subtle separation */
+    border-radius: 8px; /* Rounded corners for a modern look */
+    padding: 20px; /* Spacing inside the container */
+    max-width: 300px; /* Limit the width */
+    margin: 20px auto; /* Center the container horizontally */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  /* Style for the shortName and symbol paragraph */
+  .data p {
+    font-size: 16px; /* Slightly larger font for readability */
+    color: white; /* Dark text color for contrast */
+    margin: 0 0 10px; /* Space below the paragraph */
+  }
+  
+  /* Style for the price heading */
+  .data h2 {
+    font-size: 24px; /* Larger font size for prominence */
+    color: white; /* Primary color for the price */
+    margin: 0; /* Remove default margin */
+  }
+  
+  /* Loading indicator */
+  .loading {
+    font-size: 18px; /* Size for readability */
+    color: #555; /* Neutral color */
+    text-align: center; /* Center text */
+    margin: 20px; /* Space around the loading text */
+  }
+  

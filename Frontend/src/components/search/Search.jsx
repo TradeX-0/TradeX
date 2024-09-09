@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import "./search.css";
-import { useNavigate } from "react-router-dom";
 
 function Search() {
     const [dat, setData] = useState("");
     const [com, setCom] = useState([]);
     const [visible, setVisible] = useState(false);
-    const navigate = useNavigate(); // useNavigate hook for programmatic navigation
 
     const show = () => {
         setVisible(true);
@@ -25,26 +23,41 @@ function Search() {
 
     const handleLinkClick = (symbol) => {
         clear();
-        window.location.href = `/stocks/${symbol}/5m`; // Force a full page reload
+        window.location.href = `/stocks/${symbol}/5m`; 
     };
 
     useEffect(() => {
-        if (dat.trim() !== "") {
-            const fetchData = async () => {
+        const controller = new AbortController(); // Create a new AbortController instance
+        const signal = controller.signal; // Get the signal from the controller
+
+        const fetchData = async () => {
+            if (dat.trim() !== "") {
                 try {
-                    const response = await fetch(`http://localhost:3000/api/autoc/${dat}`);
+                    const response = await fetch(`http://localhost:3000/api/autoc/${dat}`, { signal });
                     const result = await response.json();
                     const quotes = result.quotes || [];
                     setCom(quotes);
                 } catch (error) {
-                    console.error('Error fetching data:', error);
+                    if (error.name === 'AbortError') {
+                        console.log('Fetch request was aborted');
+                    } else {
+                        console.error('Error fetching data:', error);
+                    }
                 }
-            };
+            } else {
+                clear();
+            }
+        };
+
+        const debounceTimeout = setTimeout(() => {
             fetchData();
-        } else {
-            clear();
-        }
-    }, [dat]);
+        }, 500); // Debounce for 500ms
+
+        return () => {
+            clearTimeout(debounceTimeout); // Cleanup timeout on unmount or dat change
+            controller.abort(); // Abort the fetch request if it is still ongoing
+        };
+    }, [dat]); // Only run effect when dat changes
 
     return (
         <>
@@ -56,9 +69,10 @@ function Search() {
                     onChange={(e) => setData(e.target.value)}
                     value={dat}
                     onBlur={hide}
+                    aria-label="Search for stocks"
                 />
                 {visible && (
-                    <div className='results text'>
+                    <div className='results text' aria-live="polite">
                         {com.length > 0 ? (
                             com.map((item, index) =>
                                 item.shortname && item.quoteType !== "OPTION" && item.quoteType !== "ETF" ? (
@@ -74,7 +88,9 @@ function Search() {
                                     </a>
                                 ) : null
                             )
-                        ) : null}
+                        ) : (
+                            <div></div> // Handle no results
+                        )}
                     </div>
                 )}
             </div>
