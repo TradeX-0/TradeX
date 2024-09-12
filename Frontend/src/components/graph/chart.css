@@ -1,13 +1,11 @@
 .graph-container {
   max-width: 100%; /* Full width of its parent container */
-  margin: 20px auto; /* Center horizontally */
-  padding: 0 20px; /* Optional padding for responsiveness */
 }
 
 /* Style for the chart */
 .graph {
-  background-color: #ffffff; /* White background for the chart area */
-  border: 1px solid #ddd; /* Border for visual separation */
+  background-color: #181e24; /* White background for the chart area */
+  border: 1px solid #181e24; /* Border for visual separation */
   height: 500px; /* Increased height for the chart */
   width: 100%; /* Full width of its container */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */

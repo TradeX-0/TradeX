@@ -3,10 +3,11 @@ import Search from "../search/Search";
 import { Link, useNavigate } from "react-router-dom";
 import { getUser } from '../../services/auth.js';
 import { useCookies } from 'react-cookie';
+import userImage from "../../images/user.png"
 
 function Navbar() {
     const [user, setUser] = useState(null);
-    const [cookies, , removeCookie] = useCookies(['token']);
+    const [cookies, removeCookie] = useCookies(['token']);
     const navigate = useNavigate(); // Use useNavigate for navigation
 
     useEffect(() => {
@@ -15,7 +16,6 @@ function Navbar() {
                 try {
                     const userData = await getUser(cookies.token);
                     setUser(userData);
-                    console.log(userData);
                 } catch (error) {
                     console.error('Error fetching user:', error);
                 }
@@ -26,15 +26,13 @@ function Navbar() {
     }, [cookies.token]);
 
     const logout = () => {
-        removeCookie('token', { path: '/' }); // Correctly remove the token using the key
-        setUser(null); // Update user state to null
+        removeCookie('token', {path: '/'}); // Correctly remove the token using the key
         navigate('/login'); // Redirect to the login page after logout
     };
 
     return (
         <div className="navbar bg-base-100">
             <div className="flex-1">
-                <Link to={"/stocks"} className="mr-4">back</Link>
                 <Search />
             </div>
             <p className="mr-4">{user?.user_name}</p>
@@ -44,7 +42,7 @@ function Navbar() {
                         <div className="w-10 rounded-full">
                             <img
                                 alt="User Avatar"
-                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                src={userImage}
                             />
                         </div>
                     </div>

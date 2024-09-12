@@ -7,6 +7,7 @@ import createUser from "./routes/register.js"
 import verifyEmail from "./routes/email-verify.js"
 import getUser from "./routes/getuser.js"
 import loginUser from "./routes/login.js"
+import userStokes from "./routes/user_stocks.js"
 import cors from 'cors';
 
 
@@ -24,6 +25,7 @@ app.use('/api', createUser)
 app.use('/api', verifyEmail)
 app.use('/api', getUser)
 app.use('/api', loginUser)
+app.use('/api', userStokes)
 
 
 app.listen(port, () => {

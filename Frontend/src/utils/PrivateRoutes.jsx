@@ -16,7 +16,6 @@ const PrivateRoutes = () => {
                     const data = await getUser(cookies.token);
                     setUser(data);
                 } catch (error) {
-                    console.error('Token verification failed:', error);
                     toast.error('Session expired. Please log in again.', {
                         position: "top-right",
                         autoClose: 5000,

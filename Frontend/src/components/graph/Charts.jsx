@@ -10,6 +10,7 @@ function Chart() {
   const chart = useRef(null);
   const { stock, interval } = useParams();
 
+
   // Fetch data effect
   useEffect(() => {
     const fetchData = async () => {
@@ -62,6 +63,14 @@ function Chart() {
         if (!chart.current) {
           const chartOptions = {
             layout: { textColor: 'white', background: { type: 'solid', color: '#1d232a' } },
+            grid: {
+              vertLines: {
+                color: 'grey'
+              },
+              horzLines: {
+                color: 'grey'
+              }
+            },
             timeScale: {
               timeVisible: true,
               secondsVisible: true,

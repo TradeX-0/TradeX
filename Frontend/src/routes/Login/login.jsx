@@ -29,7 +29,7 @@ function Login() {
 
   const submit = async (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
-  
+
     try {
       const response = await fetch("http://localhost:3000/api/login", {
         method: "POST",
@@ -41,16 +41,22 @@ function Login() {
           password,
         }),
       });
-  
+      const data = await response.json(); // Parse response data
+
       if (!response.ok) {
-        localStorage.setItem('showToast', 'true');
+        // Check for specific error messages
+        
+        if (data.error) {
+            document.location.reload()
+            localStorage.setItem('showToast', 'true');
+        } else {
+          localStorage.setItem('showToast', 'true');
+        }
         return; // Exit the function if the response is not ok
       }
-  
-      const data = await response.json();
-  
+
       if (data.token) {
-        document.cookie = `token=${data.token}; path=/`; // Set the token in cookies
+        document.cookie = `token=${data.token}; path=/`; // Set the token in cookies after login
         toast.success("Login successful!", {
           position: "top-right",
           autoClose: 5000,
@@ -61,11 +67,7 @@ function Login() {
           progress: undefined,
           theme: "dark",
         });
-  
-        // Wait for the toast to show before navigating
-        setTimeout(() => {
-          document.location.reload()
-        }, 2000); // Delay for 1 second
+
       } else {
         toast.error('Login failed. No token received.', {
           position: "top-right",

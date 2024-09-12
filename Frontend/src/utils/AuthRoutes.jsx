@@ -16,17 +16,7 @@ const AuthRoutes = () => {
                     const data = await getUser(cookies.token);
                     setUser(data);
                 } catch (error) {
-                    console.error('Token verification failed:', error);
-                    toast.error('Session expired. Please log in again.', {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "dark",
-                    });
+
                 }
             }
             setLoading(false);
@@ -39,7 +29,7 @@ const AuthRoutes = () => {
         return <div>Loading...</div>; // Optional: Show a loading state while checking authentication
     }
 
-    return !user ? <Outlet /> : <Navigate to='/' />;
+    return !user  ? <Outlet /> : <Navigate to='/' />;
 };
 
 export default AuthRoutes;

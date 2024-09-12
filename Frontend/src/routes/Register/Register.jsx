@@ -91,10 +91,6 @@ function Register() {
         theme: "dark",
       });
 
-      // Wait for the toast to show before navigating
-      setTimeout(() => {
-        document.location.reload()
-      }, 2000); // Delay for 1 second
     } catch (error) {
       toast.error('An error occurred. Please try again later.', {
         position: "top-right",

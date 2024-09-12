@@ -1,33 +1,102 @@
 /* Container for the data */
+
+
 .data {
-    background-color: #1d232a; /* Light background color for contrast */
-    border: 1px solid #ddd; /* Light border for subtle separation */
-    border-radius: 8px; /* Rounded corners for a modern look */
-    padding: 20px; /* Spacing inside the container */
-    max-width: 300px; /* Limit the width */
-    margin: 20px auto; /* Center the container horizontally */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  }
-  
-  /* Style for the shortName and symbol paragraph */
-  .data p {
-    font-size: 16px; /* Slightly larger font for readability */
-    color: white; /* Dark text color for contrast */
-    margin: 0 0 10px; /* Space below the paragraph */
-  }
-  
-  /* Style for the price heading */
-  .data h2 {
-    font-size: 24px; /* Larger font size for prominence */
-    color: white; /* Primary color for the price */
-    margin: 0; /* Remove default margin */
-  }
-  
-  /* Loading indicator */
-  .loading {
-    font-size: 18px; /* Size for readability */
-    color: #555; /* Neutral color */
-    text-align: center; /* Center text */
-    margin: 20px; /* Space around the loading text */
-  }
-  
+  background-color: #1d232a; /* Light background color for contrast */
+  border: 1px solid #ddd; /* Light border for subtle separation */
+  border-radius: 8px; /* Rounded corners for a modern look */
+  padding: 10px; /* Spacing inside the container */
+  max-width: 700px; /* Limit the width */
+  margin: 20px auto; /* Center the container horizontally */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Style for the shortName and symbol paragraph */
+.data p {
+  font-size: 16px; /* Slightly larger font for readability */
+  color: white; /* Dark text color for contrast */
+  margin: 0 0 10px; /* Space below the paragraph */
+}
+
+/* Style for the price heading */
+.data h2 {
+  font-size: 24px; /* Larger font size for prominence */
+  color: white; /* Primary color for the price */
+  margin: 0; /* Remove default margin */
+}
+
+/* Loading indicator */
+.loading {
+  font-size: 18px; /* Size for readability */
+  color: #555; /* Neutral color */
+  text-align: center; /* Center text */
+  margin: 20px; /* Space around the loading text */
+}
+
+/* Flex container for chart and buy/sell box */
+.flex-container {
+  display: flex; /* Flexbox layout */
+  justify-content: space-between; /* Ensure items are spaced */
+  align-items: flex-start; /* Align items at the top */
+  margin-top: 20px; /* Add margin above the container */
+  gap: 20px; /* Add space between the chart and the buy/sell box */
+}
+
+/* Chart container */
+.chart-container {
+  flex: 3; /* Allow the chart to take up most of the space */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Ensure no overflow */
+  background-color: #181e24;
+}
+
+/* Buy/Sell box */
+/* Buy/Sell box */
+.buy-sell-box {
+  background-color: #181e24;
+  height: 500px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 1; /* Make the buy/sell box take up less space compared to the chart */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Align children at the start */
+}
+
+/* Quantity input */
+.quantity-input {
+  margin-bottom: 10px; /* Space below the input */
+}
+
+.quantity-input input {
+  width: 100%; /* Full width */
+}
+
+/* Button container */
+.button-container {
+  display: flex; /* Flexbox for buttons */
+  justify-content: space-between; /* Space buttons apart */
+}
+
+/* Button styles */
+.buy-button, .sell-button {
+  display: block;
+  width: 48%; /* Adjust width to fit side by side */
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.buy-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.sell-button {
+  background-color: #f44336;
+  color: white;
+}

@@ -19,7 +19,7 @@ router.post('/login', async (req, res) => {
         }
 
         // Fetch user from the database
-        let { data: users, error } = await supabase
+        let { data: user, error } = await supabase
             .from('users')
             .select('id, user_name, password') // Ensure you select the necessary fields
             .eq('email', email)
@@ -27,16 +27,20 @@ router.post('/login', async (req, res) => {
 
         // Handle database errors
         if (error) {
+            // If the error is due to no user found, return a 404
+            if (error.message.includes('No rows found')) {
+                return res.status(404).json({ error: 'User not found' });
+            }
             return res.status(500).json({ error: 'Database error' });
         }
 
         // Check if user exists
-        if (!users) {
+        if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
         // Compare the provided password with the stored hashed password
-        const isPasswordValid = await bcrypt.compare(password, users.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
             return res.status(401).json({ error: "Incorrect password" });
@@ -44,7 +48,7 @@ router.post('/login', async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: users.id, user_name: users.user_name, email: email },
+            { id: user.id, user_name: user.user_name, email: email },
             process.env.JWT_SECRET,
             { expiresIn: '1h' } // Optional: Set an expiration time for the token
         );
@@ -53,6 +57,7 @@ router.post('/login', async (req, res) => {
         res.json({ token }); // You can also set the token as a cookie if needed
 
     } catch (error) { // Log the error for debugging
+        console.error('Error during login:', error); // Log the error for debugging
         res.status(500).json({ error: 'Internal server error' });
     }
 });
