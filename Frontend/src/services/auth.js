@@ -2,11 +2,13 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
 export const useLogout = () => {
-  const [removeCookie] = useCookies(['token']);
+  const [cookie, removeCookie] = useCookies(['token']);
   const navigate = useNavigate();
 
   const logout = () => {
-    removeCookie('token', null, {path: '/'}); // Correctly remove the token cookie
+    console.log('Before logout:'); // Log cookies before logout
+    removeCookie('token', { path: '/' }); // Ensure path matches where the cookie was set
+    console.log('After logout:'); // Log cookies after logout
     navigate('/login'); // Redirect to the login page after logout
   };
 

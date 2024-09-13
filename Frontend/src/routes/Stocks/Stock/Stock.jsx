@@ -84,7 +84,7 @@ function Stock() {
     if (userStock) {
       const purchasePrice = userStock.stock_price; // Assuming you have the purchase price in the order data
       const quantityOwned = userStock.quantity; // Assuming you have the quantity in the order data
-      const currentPrice = price; // Current market price
+      const currentPrice = inrPrice; // Current market price
 
       if (currentPrice && purchasePrice) {
         const profitLoss = (currentPrice - purchasePrice) * quantityOwned;
@@ -130,10 +130,10 @@ function Stock() {
             {order.some(item => item.stock_name === stock) ? 
               <>
                 {profitLoss !== null && (
-                  <p>{profitLoss >= 0 ? 'Profit: ' : 'Loss: '} {Math.abs(profitLoss).toFixed(2)} {symbol}</p>
+                  <p>{profitLoss >= 0 ? 'Profit: ' : 'Loss: '}{inrSymbol}{Math.abs(profitLoss).toFixed(2)}</p>
                 )}
                 <p>You have {order.find(item => item.stock_name === stock)?.quantity} stocks to sell.</p>
-                <div className='button-container'>
+                <div className='button-container justify-center'>
                   <button className='sell-button'>Close</button>
                 </div>
               </>
