@@ -38,7 +38,7 @@
   display: flex; /* Flexbox layout */
   justify-content: space-between; /* Ensure items are spaced */
   align-items: flex-start; /* Align items at the top */
-  margin-top: 20px; /* Add margin above the container */
+  margin-top: 5px; /* Add margin above the container */
   gap: 20px; /* Add space between the chart and the buy/sell box */
 }
 
@@ -64,15 +64,6 @@
   justify-content: flex-end; /* Align children at the start */
 }
 
-/* Quantity input */
-.quantity-input {
-  margin-bottom: 10px; /* Space below the input */
-}
-
-.quantity-input input {
-  width: 100%; /* Full width */
-}
-
 /* Button container */
 .button-container {
   display: flex; /* Flexbox for buttons */
@@ -85,8 +76,6 @@
   width: 48%; /* Adjust width to fit side by side */
   padding: 10px;
   margin-bottom: 10px;
-  border: none;
-  border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
 }
@@ -100,3 +89,11 @@
   background-color: #f44336;
   color: white;
 }
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+

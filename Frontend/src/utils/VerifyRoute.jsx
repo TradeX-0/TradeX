@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useCookies } from "react-cookie";
 import { getUser } from '../services/auth';
 
-const PrivateRoutes = () => {
+const VerifyRoute = () => {
     const [cookies] = useCookies(['token']);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -39,11 +39,11 @@ const PrivateRoutes = () => {
     }
     if(user){
         if(!user.email_Verified){
-            return <Navigate to='/verify' />;
+            return <Outlet />;
         }
     }
 
-    return user ? <Outlet /> : <Navigate to='/login' />;
+    return <Navigate to='/' />;
 };
 
-export default PrivateRoutes;
+export default VerifyRoute;

@@ -44,7 +44,7 @@ function Email_verify() {
         progress: undefined,
         theme: 'dark',
       });
-      navigate('/');
+      navigate("/")
     }
     if (verificationStatus === 'failed') {
       toast.error('Email Verification Failed. Please try again.', {

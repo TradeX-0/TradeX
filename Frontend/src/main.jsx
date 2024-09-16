@@ -16,8 +16,23 @@ import Register from './routes/Register/Register.jsx';
 import PrivateRoutes from './utils/PrivateRoutes.jsx';
 import Login from './routes/Login/login.jsx';
 import AuthRoutes from './utils/AuthRoutes.jsx';
+import Verify from "./routes/verify/verify.jsx"
+import VerifyRoute from './utils/VerifyRoute.jsx';
 
 const router = createBrowserRouter([
+  {
+    element: <VerifyRoute />,
+    children: [
+      {
+        path: '/verify',
+        element: <Verify />
+      }
+    ]
+  },
+  {
+    path: '/email_verification/:token',
+    element: <Email_verify />,
+  },
   {
     element: <AuthRoutes />,
     children: [
@@ -43,13 +58,9 @@ const router = createBrowserRouter([
         element: <Stocks />,
       },
       {
-        path: '/stocks/:stock/:interval',
+        path: '/stocks/:stock',
         element: <Stock />,
-      },
-      {
-        path: '/email_verification/:token',
-        element: <Email_verify />,
-      },
+      }
     ],
   },
 ]);

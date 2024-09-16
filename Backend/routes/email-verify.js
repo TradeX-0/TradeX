@@ -1,4 +1,4 @@
-import { response, Router } from 'express';
+import { Router } from 'express';
 import supabase from "../database/supabase.js"
 import "dotenv/config"
 import jwt from "jsonwebtoken"

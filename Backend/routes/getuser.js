@@ -11,7 +11,7 @@ router.get('/getuser/:token', async (req, res) => {
         const user = jwt.verify(token, process.env.JWT_SECRET)
         let { data, error } = await supabase
             .from('users')
-            .select('id, user_name, email, wallet') // Ensure you select the necessary fields
+            .select('id, user_name, email, wallet, email_Verified') // Ensure you select the necessary fields
             .eq('email', user.email)
             .single(); // Use .single() to get a single user
         res.json(data)

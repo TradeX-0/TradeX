@@ -3,6 +3,7 @@ import supabase from "../database/supabase.js";
 import bodyParser from 'body-parser';
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
+import mail from '../components/mail.js';
 import "dotenv/config";
 
 const router = Router();
@@ -42,11 +43,7 @@ router.post('/register', async (req, res) => {
                 { expiresIn: '1h' } // Optional: Set an expiration time for the token
             );
 
-
-            // Set the token as a cookie
-            res.json(token); // Optional: Set `httpOnly` to protect the cookie from client-side JavaScript
-
-            // Respond with success
+            res.json(token); 
         }
 
     } catch (error) {

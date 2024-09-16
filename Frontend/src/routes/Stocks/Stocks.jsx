@@ -1,20 +1,15 @@
-import Search from '../../components/search/Search';
 import { useEffect, useState } from 'react';
 import './Stocks.css';
 import { useCookies } from 'react-cookie';
 import { getUser } from '../../services/auth';
 import { getStocks } from '../../services/stocks';
 import getSymbolFromCurrency from 'currency-symbol-map';
-import userImage from "../../images/user.png"
-import { useLogout } from '../../services/auth';
-import logo from "../../images/Logo.png"
 import Navbar from "../../components/navbar/Navbar"
 
 function Stocks() {
   const [orders, setOrders] = useState([]);
   const [user, setUser] = useState(null);
   const [cookies] = useCookies(['token']);
-  const logout = useLogout()
 
   useEffect(() => {
     if (cookies.token) {
@@ -74,6 +69,7 @@ function Stocks() {
           <thead>
             <tr> 
               <th>#</th>
+              <th>Bought on</th>
               <th>Stock Name</th>
               <th>Quantity</th>
               <th>Price</th>
@@ -88,6 +84,14 @@ function Stocks() {
               orders.map((order, index) => (
                 <tr key={order.id}>
                   <td>{index + 1}</td>
+                  <td>{new Date(order.created_at).toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true // Use 12-hour format
+})}</td>
                   <td>{order.stock_name}</td>
                   <td>{order.quantity}</td>
                   <td>{order.stock_price}</td>

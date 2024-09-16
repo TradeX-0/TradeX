@@ -23,7 +23,7 @@ function Search() {
 
     const handleLinkClick = (symbol) => {
         clear();
-        window.location.href = `/stocks/${symbol}/5m`; 
+        window.location.href = `/stocks/${symbol}`; 
     };
 
     useEffect(() => {
@@ -51,7 +51,7 @@ function Search() {
 
         const debounceTimeout = setTimeout(() => {
             fetchData();
-        }, 500); // Debounce for 500ms
+        }, 300); // Debounce for 500ms
 
         return () => {
             clearTimeout(debounceTimeout); // Cleanup timeout on unmount or dat change
@@ -62,20 +62,32 @@ function Search() {
     return (
         <>
             <div onFocus={show}>
+            <label className="input input-bordered flex items-center gap-2">
                 <input
                     type="text"
                     placeholder="Search for stocks"
-                    className="input input-bordered w-24 md:w-auto"
+                    className="grow"
                     onChange={(e) => setData(e.target.value)}
                     value={dat}
                     onBlur={hide}
                     aria-label="Search for stocks"
                 />
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="h-4 w-4 opacity-70">
+                    <path
+                    fillRule="evenodd"
+                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                    clipRule="evenodd" />
+                </svg>
+                </label>
                 {visible && (
                     <div className='results text' aria-live="polite">
                         {com.length > 0 ? (
                             com.map((item, index) =>
-                                item.shortname && item.quoteType !== "OPTION" && item.quoteType !== "ETF" ? (
+                                item.shortname && item.quoteType !== "OPTION" && item.quoteType !== "ETF" && item.quoteType !== "CRYPTOCURRENCY" && item.quoteType !== "FUTURE" ? (
                                     <a
                                         key={index}
                                         href={`/stocks/${item.symbol}/5m`} // Use anchor tag for full page reload

@@ -1,3 +1,13 @@
+.hover-info {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px;
+  border-radius: 8px;
+  z-index: 10; /* Ensure it appears above the chart */
+  transition: opacity 0.2s ease; /* Smooth transition */
+}
+
+
 .graph-container {
   max-width: 100%; /* Full width of its parent container */
 }
@@ -10,3 +20,4 @@
   width: 100%; /* Full width of its container */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
+

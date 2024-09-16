@@ -3,13 +3,36 @@ import { createChart } from 'lightweight-charts';
 import './chart.css';
 import { useParams } from 'react-router-dom';
 
-function Chart() {
+function Chart({interval}) {
   const [data, setData] = useState(null);
+  const [hoveredCandle, setHoveredCandle] = useState({ high: null, low: null });
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [loading, setLoading] = useState(true);
   const chartContainerRef = useRef(null);
   const candleSeriesRef = useRef(null);
   const chart = useRef(null);
-  const { stock, interval } = useParams();
+  const { stock } = useParams();
 
+  useEffect(() => {
+    const handleMouseMove = (event) => {
+      const rect = chartContainerRef.current.getBoundingClientRect();
+      setCursorPosition({
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      });
+    };
+  
+    const chartContainer = chartContainerRef.current;
+    if (chartContainer) {
+      chartContainer.addEventListener('mousemove', handleMouseMove);
+    }
+  
+    return () => {
+      if (chartContainer) {
+        chartContainer.removeEventListener('mousemove', handleMouseMove);
+      }
+    };
+  }, []);
 
   // Fetch data effect
   useEffect(() => {
@@ -27,7 +50,7 @@ function Chart() {
         }
         const priceData = await priceResponse.json();
         const newPrice = priceData.regularMarketPrice;
-
+  
         const chartData = result.quotes.map((data) => ({
           time: new Date(new Date(data.date).toUTCString()).getTime() / 1000,
           open: data.open,
@@ -35,7 +58,7 @@ function Chart() {
           low: data.low,
           close: data.close
         })).filter(item => item.open && item.high && item.low && item.close);
-
+  
         // Update the last data point with the new price
         if (chartData.length > 1) {
           chartData[chartData.length - 1] = {
@@ -46,17 +69,21 @@ function Chart() {
             close: newPrice,
           };
         }
-
+  
         setData(chartData);
       } catch (error) {
         console.error('Error fetching data:', error);
+      }finally {
+        setLoading(false); // Set loading to false after fetching data
       }
     };
+  
+    const intervalId = setInterval(fetchData, 1000);
+  
+    return () => clearInterval(intervalId);
+  }, [stock, interval]);  
 
-    fetchData();
-  }); // Run fetchData when stock or interval changes
 
-  // Initialize and update chart
   useEffect(() => {
     if (data && chartContainerRef.current) {
       try {
@@ -65,10 +92,12 @@ function Chart() {
             layout: { textColor: 'white', background: { type: 'solid', color: '#1d232a' } },
             grid: {
               vertLines: {
-                color: 'grey'
+                color: 'grey',
+                visible: false
               },
               horzLines: {
-                color: 'grey'
+                color: 'grey',
+                visible: false
               }
             },
             timeScale: {
@@ -80,6 +109,18 @@ function Chart() {
           candleSeriesRef.current = chart.current.addCandlestickSeries({
             upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
             wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+          });
+          
+          // Subscribe to crosshair move
+          chart.current.subscribeCrosshairMove((param) => {
+            if (!param || !param.seriesData) return;
+  
+            const candleData = param.seriesData.get(candleSeriesRef.current);
+            if (candleData) {
+              setHoveredCandle({ high: candleData.high, low: candleData.low });
+            } else {
+              setHoveredCandle({ high: null, low: null });
+            }
           });
         }
         candleSeriesRef.current.setData(data); // Only set data if it exists
@@ -103,6 +144,20 @@ function Chart() {
   return (
     <div className="graph-container">
       <div ref={chartContainerRef} className="graph" />
+      {hoveredCandle.high !== null && hoveredCandle.low !== null && (
+        <div
+          className="hover-info"
+          style={{
+            position: 'absolute',
+            left: cursorPosition.x + 20, // Offset to the right
+            top: cursorPosition.y + 200,   // Offset down
+            pointerEvents: 'none',         // Prevent hover info from blocking mouse events
+          }}
+        >
+          <p>High: {Math.round(hoveredCandle.high * 100) / 100}</p>
+          <p>Low: {Math.round(hoveredCandle.low * 100) / 100}</p>
+        </div>
+      )}
     </div>
   );
 }
