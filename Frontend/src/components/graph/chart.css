@@ -21,3 +21,12 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
+.nodata{
+  display: flex;
+  justify-content: center;
+  background-color: #181e24; /* White background for the chart area */
+  border: 1px solid #181e24; /* Border for visual separation */
+  height: 500px; /* Increased height for the chart */
+  width: 100%; /* Full width of its container */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}

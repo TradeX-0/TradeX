@@ -7,6 +7,8 @@ import getSymbolFromCurrency from 'currency-symbol-map';
 import { Converter } from "easy-currencies";
 import { getStocks } from '../../../services/stocks';
 import { getUser } from '../../../services/auth';
+import { buy, sell  } from '../../../services/functioning';
+import { close } from '../../../services/functioning';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 
@@ -14,7 +16,8 @@ function Stock() {
   const [data, setData] = useState(null);
   const [price, setPrice] = useState(null);
   const [inrPrice, setInrPrice] = useState(null);
-  const [quantity, setQuantity] = useState(0)
+  const [message, setMessage] = useState("")
+  const [quantity, setQuantity] = useState("")
   const [user, setUser] = useState(null);
   const [order, setOrders] = useState([]);
   const [interval, setInterval] = useState('5m')
@@ -23,13 +26,15 @@ function Stock() {
 
   const { stock } = useParams();
 
-  const buy = ()=> {
-      if(user){
-        if(user.wallet - (quantity * inrPrice) < 0){
-          console.log("hi")
-        }
-      }
+  useEffect(()=>{
+    if(quantity <1){
+      setMessage("The minimum quantity for this stock is 1")
     }
+    else if(user?.wallet - (quantity*inrPrice) < 0){
+      setMessage("You dont have enough Balance")
+    }
+  }, [quantity])
+  
 
   useEffect(() => {
     if (cookies.token) {
@@ -46,9 +51,49 @@ function Stock() {
     }
   }, [cookies.token]);
 
+  const handleBuyStock = async () => {
+    if (user?.id && quantity > 0) {
+      let balance = user?.wallet - (quantity*inrPrice)
+      try {
+        const response = await buy(data.symbol, quantity, inrPrice, user.id, balance);
+        window.location.reload();
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const handleSellStock = async () => {
+    if (user?.id && quantity > 0) {
+      let balance = user?.wallet - (quantity*inrPrice)
+      try {
+        const response = await sell(data.symbol, quantity, inrPrice, user.id, balance);
+        window.location.reload();
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+  const Handleclose = async () => {
+    if (user?.id) {
+      const userStock = order.find(item => item.stock_name === stock);
+      if(userStock){
+        let balance = user?.wallet + (userStock.stock_price * userStock.quantity) + calculateProfitLoss()
+        try {
+          const response = await close(data.symbol, user.id, balance);
+          window.location.reload();
+          console.log(response);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     if (user?.id) { // Ensure user is defined and has an ID
-      const fetchOrders = async () => {
+      const fetchstock = async () => {
         try {
           const response = await getStocks(user);
           setOrders(response);
@@ -57,7 +102,7 @@ function Stock() {
         }
       };
 
-      fetchOrders();
+      fetchstock();
     }
   }, [user]);
 
@@ -84,8 +129,27 @@ function Stock() {
     fetchData();
   }); // Added stock as a dependency to avoid infinite loop
 
+  useEffect(()=>{
+    
+  })
+
   const symbol = getSymbolFromCurrency(data?.currency);
   const inrSymbol = getSymbolFromCurrency("INR");
+  const handleKeypress = (e) => {
+    const characterCode = e.key
+    if (characterCode === 'Backspace') return
+
+    const characterNumber = Number(characterCode)
+    if (characterNumber >= 0 && characterNumber <= 9) {
+      if (e.currentTarget.value && e.currentTarget.value.length) {
+        return
+      } else if (characterNumber === 0) {
+        e.preventDefault()
+      }
+    } else {
+      e.preventDefault()
+    }
+  }
 
   // Calculate profit/loss
   const calculateProfitLoss = () => {
@@ -136,8 +200,8 @@ function Stock() {
             <select className="select select-bordered" onChange={e=>{
               setInterval(e.target.value)
             }}>
+              <option defaultValue={'5m'}>5m</option>
               <option>1m</option>
-              <option>5m</option>
               <option>15m</option>
               <option>1h</option>
               <option>1d</option>
@@ -146,36 +210,65 @@ function Stock() {
           <Chart interval={interval}/>
         </div>
         <div className='buy-sell-box'>
-          
+
+            <div className='divider mt-8'></div>
             {order.some(item => item.stock_name === stock) ? 
               <>
-                {profitLoss !== null && (
-                  <p>{profitLoss >= 0 ? 'Profit: ' : 'Loss: '}{inrSymbol}{Math.abs(profitLoss).toFixed(2)}</p>
-                )}
-                <p>You have {order.find(item => item.stock_name === stock)?.quantity} stocks to sell.</p>
-                <div className='button-container justify-center'>
-                  <button className='btn btn-outline btn-error sell-button'>Close</button>
-                </div>
-              </>
+              {profitLoss !== null && (
+                <>
+                  {order.find(item => item.stock_name === stock)?.type === "SELL" ? (
+                    <div className="flex justift-between items-center">
+                      <p className={`text-lg`}>
+                        P&L
+                      </p>
+                      <button className={`btn btn-active w-56 ml-32 font-semibold text-lg ${profitLoss >= 0 ? 'text-red-500' : 'text-green-500'}`}>
+                      {profitLoss < 0 ? '+' : '-'}{inrSymbol}{Math.abs(profitLoss).toFixed(2)}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center">
+                      <p className={`text-lg`}>
+                        P&L
+                      </p>
+                      <button className={`btn btn-active w-56 text-lg font-semibold ml-32 ${profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {profitLoss >= 0 ? '+' : '-'}{inrSymbol}{Math.abs(profitLoss).toFixed(2)}
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+              
+              <div className="button-container flex justify-center mt-4">
+                <button className="btn btn-outline btn-error sell-button" onClick={Handleclose}>
+                  Close
+                </button>
+              </div>
+            </>
+            
              : 
               <>
                 <p>You do not own this stock.</p>
                 <div className='button-container'>
                   <button className="btn btn-outline btn-success buy-button" onClick={()=>document.getElementById('buy_modal').showModal()}>BUY</button>
-                    <dialog id="buy_modal" className="modal">
+                    <dialog id="buy_modal" className="modal" onClose={() => setQuantity('')}>
                     <div className="modal-box">
                         <h3 className="font-bold text-lg mb-8">{data?.shortName}</h3>
                         <div className="flex justify-between">
                           <p className='mt-4'>Quantity</p>
                           <input type="number" max="5" placeholder="Qty" className="input input-bordered w-40 h-12 max-w-xs" onChange={e =>{
                             setQuantity(e.target.value)
-                          }}/>
+                          }}
+                          value={quantity}
+                          onKeyDown={handleKeypress} 
+                          min='1' 
+                          step='1'
+                          />
                         </div>
                         <div className="flex justify-between mt-4">
                           <p className='mt-4'>Market price</p>
                           <button className='btn btn-wide w-40 h-12'>{inrSymbol}{Math.round(inrPrice * 100) / 100}</button>
                         </div>
-                        <button className="btn btn-error w-[450px] mt-24 flex items-center">
+                        {(quantity < 1) || (user?.wallet - (quantity*inrPrice) < 0) ? <button className="btn btn-error w-[450px] mt-24 flex items-center">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-6 w-6 shrink-0 stroke-current mr-2" // Added margin-right for spacing
@@ -189,15 +282,21 @@ function Stock() {
                               d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          <span>The minimum Quantity for this stock is 1</span>
-                        </button>
+                          <span>{message}</span>
+                        </button> : <div className="flex justify-between mt-36"></div>}
                         <div className="divider"></div>
                         <div className="flex justify-between pb-2">
                           <p>Balance: {inrSymbol}{user?.wallet}</p>
-                          <p>required: {inrSymbol}{quantity * (Math.round(inrPrice * 100) / 100)}</p>
+                          <p>required: {inrSymbol}{(quantity * inrPrice).toFixed(2)}</p>
                         </div>
                         <div className='flex justify-center'>
-                          <button className="btn btn-outline btn-success sell-button" onSubmit={buy()}>Buy</button>
+                          <button
+                            className="btn btn-outline btn-success buy-button"
+                            onClick={handleBuyStock}
+                            disabled={quantity < 1 || (user?.wallet - (quantity*inrPrice)) < 0}
+                          >
+                            Buy
+                          </button>
                         </div>
                         <p className='font-thin'>Press ESC key or click outside to close</p>
                       </div>
@@ -206,25 +305,31 @@ function Stock() {
                       </form>
                     </dialog>
                     <button className="btn btn-outline btn-error sell-button" onClick={()=>document.getElementById('sell_modal').showModal()}>SELL</button>
-                    <dialog id="sell_modal" className="modal">
+                    <dialog id="sell_modal" className="modal" onClose={() => setQuantity('')}>
                       <div className="modal-box">
                         <h3 className="font-bold text-lg mb-8">{data?.shortName}</h3>
                         <div className="flex justify-between">
                           <p className='mt-4'>Quantity</p>
                           <input type="number" max="5" placeholder="Qty" className="input input-bordered w-40 h-12 max-w-xs" onChange={e =>{
                             setQuantity(e.target.value)
-                          }}/>
+                          }}
+                          onKeyDown={handleKeypress} 
+                          min='1' 
+                          step='1'
+                          value={quantity}
+                          />
                         </div>
                         <div className="flex justify-between mt-4">
                           <p className='mt-4'>Market price</p>
                           <button className='btn btn-wide w-40 h-12'>{inrSymbol}{Math.round(inrPrice * 100) / 100}</button>
                         </div>
-                        <button className="btn btn-error w-[450px] mt-24 flex items-center">
+                        {(quantity < 1) || ((user?.wallet - (quantity*inrPrice)) < 0) ? <button className="btn btn-error w-[450px] mt-24 flex items-center">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-6 w-6 shrink-0 stroke-current mr-2" // Added margin-right for spacing
                             fill="none"
                             viewBox="0 0 24 24"
+
                           >
                             <path
                               strokeLinecap="round"
@@ -233,15 +338,21 @@ function Stock() {
                               d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          <span>The minimum Quantity for this stock is 1</span>
-                        </button>
+                          <span>{message}</span>
+                        </button> : <div className="flex justify-between mt-36"></div>}
                         <div className="divider"></div>
                         <div className="flex justify-between pb-2">
                           <p>Balance: {inrSymbol}{user?.wallet}</p>
                           <p>required: {inrSymbol}{(Math.round(quantity * inrPrice * 100) / 100)}</p>
                         </div>
                         <div className='flex justify-center'>
-                          <button className="btn btn-outline btn-error sell-button">Sell</button>
+                        <button
+                            className="btn btn-outline btn-error buy-button"
+                            onClick={handleSellStock}
+                            disabled={quantity < 1 || (user?.wallet - (quantity*inrPrice)) < 0}
+                          >
+                            Sell
+                          </button>
                         </div>
                         <p className='font-thin'>Press ESC key or click outside to close</p>
                       </div>

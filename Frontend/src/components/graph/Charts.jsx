@@ -141,10 +141,12 @@ function Chart({interval}) {
     };
   }, [stock, interval]);
 
+
+
   return (
     <div className="graph-container">
       <div ref={chartContainerRef} className="graph" />
-      {hoveredCandle.high !== null && hoveredCandle.low !== null && (
+      {data != null && data.length == 0 ? <>{ chart.current == null?<p></p> : <p>data not available</p>}</> : <>{hoveredCandle.high !== null && hoveredCandle.low !== null && (
         <div
           className="hover-info"
           style={{
@@ -157,7 +159,7 @@ function Chart({interval}) {
           <p>High: {Math.round(hoveredCandle.high * 100) / 100}</p>
           <p>Low: {Math.round(hoveredCandle.low * 100) / 100}</p>
         </div>
-      )}
+      )}</>}
     </div>
   );
 }

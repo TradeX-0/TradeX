@@ -9,6 +9,10 @@ import getUser from "./routes/getuser.js"
 import loginUser from "./routes/login.js"
 import userStokes from "./routes/user_stocks.js"
 import verifyLink from "./routes/verify_link.js"
+import Buy from "./routes/buy.js"
+import Close from "./routes/close.js"
+import Sell from "./routes/sell.js"
+import mquotesRoutes from "./routes/mquotes.js"
 import cors from 'cors';
 
 
@@ -18,8 +22,8 @@ const port = 3000;
 
 app.use(cors());
 
-app.use('/api', stockPriceRoutes);
-app.use('/api', currentstockPriceRoutes);
+app.use('/api', stockPriceRoutes)
+app.use('/api', currentstockPriceRoutes)
 app.use('/api', quotesRoutes)
 app.use('/api', autocRoutes)
 app.use('/api', createUser)
@@ -28,6 +32,10 @@ app.use('/api', getUser)
 app.use('/api', loginUser)
 app.use('/api', userStokes)
 app.use('/api', verifyLink)
+app.use('/api', Buy)
+app.use('/api', Close)
+app.use('/api', Sell)
+app.use('/api', mquotesRoutes)
 
 
 app.listen(port, () => {
