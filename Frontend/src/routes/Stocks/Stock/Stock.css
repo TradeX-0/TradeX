@@ -61,7 +61,7 @@
   flex: 1; /* Make the buy/sell box take up less space compared to the chart */
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Align children at the start */
+  justify-content: space-between; /* Align children at the start */
 }
 
 /* Button container */

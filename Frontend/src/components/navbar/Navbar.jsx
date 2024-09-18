@@ -39,11 +39,13 @@ function Navbar() {
             <div className="flex-none gap-2">
                 <div className="dropdown dropdown-end">
                     <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                        <div className="w-10 rounded-full">
-                            <img
-                                alt="User Avatar"
-                                src={userImage}
+                    <div className="avatar online">
+                        <div className="w-12 h-16 rounded-full overflow-hidden">
+                            <img 
+                            src={userImage} 
+                            className="w-full h-full object-cover -mt-2" // Adjust -mt-2 as needed
                             />
+                        </div>
                         </div>
                     </div>
                     <ul

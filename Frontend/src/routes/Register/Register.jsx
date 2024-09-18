@@ -7,11 +7,12 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   useEffect(() => {
-    // Check if the flag is set
     if (localStorage.getItem('showToast') === 'true') {
-      // Show the toast notification
       toast.error('Account already exists.', {
         position: "top-right",
         autoClose: 5000,
@@ -22,18 +23,13 @@ function Register() {
         progress: undefined,
         theme: "dark",
       });
-
-      // Clear the flag
       localStorage.removeItem('showToast');
     }
   }, []);
 
-  const submit = async (e) => {
-    e.preventDefault(); // Prevents the default form submission behavior
-
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match", {
+  const validateInputs = () => {
+    if (!username || username.length < 3) {
+      toast.error("Username must be at least 3 characters long.", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -43,8 +39,60 @@ function Register() {
         progress: undefined,
         theme: "dark",
       });
-      return;
+      return false;
     }
+
+    if (!email || !emailRegex.test(email)) {
+      toast.error("Please enter a valid email.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      return false;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      return false;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+
+    if (!validateInputs()) return;
+
+    setIsLoading(true);
 
     try {
       const response = await fetch("http://localhost:3000/api/register", {
@@ -59,11 +107,14 @@ function Register() {
         }),
       });
 
-      if (!response.ok) {
-        // Set a flag in localStorage
+      setIsLoading(false);
+
+      if (response.status === 409) {
         localStorage.setItem('showToast', 'true');
-        
-        // Optionally, show a toast for the error
+        return;
+      }
+
+      if (!response.ok) {
         toast.error('Registration failed. Please try again later.', {
           position: "top-right",
           autoClose: 5000,
@@ -74,12 +125,12 @@ function Register() {
           progress: undefined,
           theme: "dark",
         });
-
-        return; // Exit the function if the response is not ok
+        return;
       }
 
       const data = await response.json();
-      document.cookie = `token=${data}; path=/`; // Set the token in cookies
+      document.cookie = `token=${data}; path=/`;
+
       toast.success('Registered successfully!', {
         position: "top-right",
         autoClose: 5000,
@@ -92,6 +143,7 @@ function Register() {
       });
 
     } catch (error) {
+      setIsLoading(false);
       toast.error('An error occurred. Please try again later.', {
         position: "top-right",
         autoClose: 5000,
@@ -127,16 +179,7 @@ function Register() {
                   <span className="label-text">Username</span>
                 </label>
                 <label className="input input-bordered flex items-center gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 16 16"
-                    fill="currentColor"
-                    className="h-4 w-4 opacity-70">
-                    <path
-                      d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-                  </svg>
-                  <input type="text" className="grow" placeholder="Username"  onChange={(e) => setUsername(e.target.value)}
-                  required/>
+                  <input type="text" className="grow" placeholder="Username" onChange={(e) => setUsername(e.target.value)} required />
                 </label>
               </div>
               <div className="form-control">
@@ -144,47 +187,15 @@ function Register() {
                   <span className="label-text">Email</span>
                 </label>
                 <label className="input input-bordered flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                  className="h-4 w-4 opacity-70">
-                  <path
-                    d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                  <path
-                    d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-                </svg>
-                <input
-                                type="email"
-                                placeholder="Email"
-                                className="grow"
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                              />
-              </label>
+                  <input type="email" placeholder="Email" className="grow" onChange={(e) => setEmail(e.target.value)} required />
+                </label>
               </div>
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
                 <label className="input input-bordered flex items-center gap-2">
-                <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      className="h-4 w-4 opacity-70">
-                      <path
-                        fillRule="evenodd"
-                        d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                        clipRule="evenodd" />
-                    </svg>
-                    <input
-                                    type="password"
-                                    placeholder="Password"
-                                    className="grow"
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                  />
+                  <input type="password" placeholder="Password" className="grow" onChange={(e) => setPassword(e.target.value)} required />
                 </label>
               </div>
               <div className="form-control">
@@ -192,30 +203,16 @@ function Register() {
                   <span className="label-text">Confirm Password</span>
                 </label>
                 <label className="input input-bordered flex items-center gap-2">
-                <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      fill="currentColor"
-                      className="h-4 w-4 opacity-70">
-                      <path
-                        fillRule="evenodd"
-                        d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                        clipRule="evenodd" />
-                    </svg>
-                    <input
-                                    type="password"
-                                    placeholder="Confirm Password"
-                                    className="grow"
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required
-                                  />
+                  <input type="password" placeholder="Confirm Password" className="grow" onChange={(e) => setConfirmPassword(e.target.value)} required />
                 </label>
                 <label className="label">
                   <Link to="/login" className="label-text-alt link link-hover">Already have an account?</Link>
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button type="submit" className="btn btn-active">Register</button>
+                <button type="submit" className={`btn btn-active ${isLoading ? 'loading' : ''}`} disabled={isLoading}>
+                  {isLoading ? 'Registering...' : 'Register'}
+                </button>
               </div>
             </form>
           </div>

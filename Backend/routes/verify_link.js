@@ -10,11 +10,9 @@ router.use(bodyParser.json());
 
 router.get('/verify-link/:token', async (req, res) => {
     const { token } = req.params; 
-    console.log(token);
 
     try {
         const data = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(data.email);
 
         // Send email and check for success
         await mail(data.email, token);

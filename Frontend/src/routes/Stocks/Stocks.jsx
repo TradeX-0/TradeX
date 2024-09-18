@@ -6,6 +6,7 @@ import { getStocks } from '../../services/stocks';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import Navbar from "../../components/navbar/Navbar";
 import { Converter } from 'easy-currencies'; 
+import { Link } from 'react-router-dom';
 
 function Stocks() {
   const [orders, setOrders] = useState([]);
@@ -16,12 +17,14 @@ function Stocks() {
   const converter = new Converter();
   const [convertedPrices, setConvertedPrices] = useState({});
   const [totalPL, setTotalPL] = useState(0); // State for storing the total P&L
+  const [totalspend, setTotalSpend] = useState(0)
 
   // Fetch market prices and convert them to INR
   useEffect(() => {
     const convertPrices = async () => {
       const newConvertedPrices = {};
       let cumulativePL = 0; // Initialize total P&L to 0
+      let cumulativeS = 0
 
       for (let i = 0; i < marketPrices.length; i++) {
         if (marketPrices[i]) {  // Use index instead of stock_name
@@ -33,8 +36,12 @@ function Stocks() {
 
             // Calculate individual P&L and add it to cumulative P&L
             const order = orders[i]; 
-            const individualPL = (convertedPrice - order.stock_price) * order.quantity;
+            let individualPL = (convertedPrice - order.stock_price) * order.quantity;
+            if(order.type == "SELL"){
+              individualPL = Math.abs(individualPL)
+            }
             cumulativePL += individualPL; // Add this stock's P&L to the total
+            cumulativeS += order.stock_price
 
           } catch (error) {
             console.error(`Error converting price for index ${i}:`, error);
@@ -45,6 +52,7 @@ function Stocks() {
 
       setConvertedPrices(newConvertedPrices);
       setTotalPL(cumulativePL); // Set the total P&L
+      setTotalSpend(cumulativeS)
     };
 
     convertPrices();
@@ -77,7 +85,6 @@ function Stocks() {
         }
 
         const result = await response.json();
-        console.log('Market Prices:', result); // Debugging line to check fetched market prices
         setMarketPrices(result); // Store market prices in state
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -134,11 +141,11 @@ function Stocks() {
             <div className="stat-value">{inrSymbol}{user?.wallet}</div>
           </div>  
         </div>
-        <div className="stats shadow border border-white w-[400px] p-4">
+        <div className="stats shadow border border-white w-[450px] p-4">
           <div className="stat">
             <div className="stat-title">P&L</div>
             <div className={`stat-value ${totalPL >= 0 ? 'text-green-500' : 'text-orange-600'}`}>
-            {totalPL >= 0 ? '+' : '-'}{inrSymbol}{Math.abs(totalPL).toFixed(2)} {/* Display the total P&L */}
+            {totalPL >= 0 ? '+' : '-'}{inrSymbol}{Math.abs(totalPL).toFixed(2)} ({totalspend !== 0 ? ((Math.abs(totalPL) / Math.abs(totalspend)) * 100).toFixed(2) : '0.00'}%)            {/* Display the total P&L */}
             </div>
           </div>  
         </div>
@@ -146,12 +153,12 @@ function Stocks() {
 
       <br />
       <br />
-      <h3>Portfolio</h3>
+      <h3 className='p-4 text-xl font-bold'>Portfolio</h3>
       <div className="overflow-x-auto">
         <table className="table">
           <thead>
             <tr> 
-              <th>#</th>
+              <th></th>
               <th>Stock Name</th>
               <th>Bought on</th>
               <th>Type</th>
@@ -169,7 +176,7 @@ function Stocks() {
               orders.map((order, index) => (
                 <tr key={order.id}>
                   <td>{index + 1}</td>
-                  <td>{order.stock_name}</td>
+                  <td><Link to={`http://localhost:5173/stocks/${order.stock_name}`} >{order.stock_name}</Link></td>
                   <td>{new Date(order.created_at).toLocaleString('en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -188,11 +195,11 @@ function Stocks() {
                     order.type === "BUY" ?
                     ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) >= 0 ? 'text-green-500' : 'text-orange-600'
                   :
-                    ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) < 0 ? 'text-orange-600' : 'text-green-500'
+                    ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) < 0 ? 'text-green-500' : 'text-orange-600'
                   }`}>
                     {order.type === "BUY" ? ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) >= 0 ? '+' : '-'
                   :
-                    ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) < 0 ? '-' : '+'}{inrSymbol}{Math.abs((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2)}
+                    ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) < 0 ? '+' : '-'}{inrSymbol}{Math.abs((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2)} ({((((convertedPrices[index] - order.stock_price) * order.quantity)/convertedPrices[index])*100).toFixed(2)}%)
                   </td>
                 </tr>
               ))

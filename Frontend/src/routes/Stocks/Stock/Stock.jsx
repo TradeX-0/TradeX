@@ -173,7 +173,7 @@ function Stock() {
     <>
       <Navbar />
       
-      <Link to={"/stocks"} className="mr-4">back</Link>
+      <Link to={"/stocks"} className="p-4 text-l font-bold">{'<'} back</Link>
 
       <div className="flex justify-between items-start space-x-4">
         {data == null ? 
@@ -210,7 +210,35 @@ function Stock() {
           <Chart interval={interval}/>
         </div>
         <div className='buy-sell-box'>
-
+            <div>
+              <h2 className='flex-none text-xl font-bold'>{data?.longName}</h2>
+              <div className='divider'></div>
+            </div>
+            <div>
+            <div className='flex flex-col justify-center border rounded-lg'>
+              <p className='text-center'>Analysis Rating</p>
+              <p className='text-center font-bold'>{data?.averageAnalystRating}</p>
+            </div>
+            <div className='flex m-4'>
+              <p className='mt-4'>Market Volume</p>
+              <button className='border border-neutral-700 w-32 rounded-lg text-base font-semibold ml-32 mt-4'>{data?.regularMarketVolume}</button>
+            </div>
+            <div className='flex justify-center space-x-12'>
+              <div className='flex flex-col items-center'>
+                <p className='text-base font-medium'>Daily Low</p>
+                <button className='border border-neutral-700  text-base font-semibold mt-2 px-6 py-2 rounded-lg shadow-lg w-40'>
+                  {symbol} {data?.regularMarketDayRange.low}
+                </button>
+              </div>
+              <div className='flex flex-col items-center'>
+                <p className='text-base font-medium'>Daily High</p>
+                <button className='border border-neutral-700  text-base font-semibold mt-2 px-6 py-2 rounded-lg shadow-lg w-40'>
+                  {symbol} {data?.regularMarketDayRange.high}
+                </button>
+              </div>
+            </div>
+            </div>
+            <div>
             <div className='divider mt-8'></div>
             {order.some(item => item.stock_name === stock) ? 
               <>
@@ -366,7 +394,9 @@ function Stock() {
           
         </div>
       </div>
+      </div>
     </>
+    
   );
 }
 

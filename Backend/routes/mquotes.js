@@ -7,7 +7,6 @@ router.post('/mquotes', async (req, res) => {
     try {
         const symbols = Object.keys(req.body); // Expecting an object with stock names as keys
         
-        console.log(symbols); // Log received symbols for debugging
         
         if (symbols.length === 0) {
             return res.status(400).send("No symbols provided.");
