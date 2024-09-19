@@ -87,7 +87,7 @@ function Search() {
                     <div className='results text' aria-live="polite">
                         {com.length > 0 ? (
                             com.map((item, index) =>
-                                item.shortname && item.quoteType !== "OPTION" && item.quoteType !== "ETF" && item.quoteType !== "CRYPTOCURRENCY" && item.quoteType !== "FUTURE" ? (
+                                item.shortname && item.quoteType !== "OPTION" && item.quoteType !== "ETF" && item.quoteType !== "MUTUALFUND" && item.quoteType !== "CRYPTOCURRENCY" && item.quoteType !== "FUTURE" ? (
                                     <a
                                         key={index}
                                         href={`/stocks/${item.symbol}/5m`} // Use anchor tag for full page reload

@@ -66,12 +66,11 @@ function App() {
                   className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
                 >
                   <li>
-                    <a className="justify-between">
-                      Profile
-                      <span className="badge">New</span>
-                    </a>
-                  </li>
-                  <li><a>Settings</a></li>
+                            <Link to={"/watchlist"} className="justify-between">
+                                Watchlist
+                                <span className="badge">New</span>
+                            </Link>
+                        </li>
                   <li><a onClick={logout}>Logout</a></li>
                 </ul>
               </div>
@@ -97,7 +96,7 @@ function App() {
               transition={{ duration: 0.6 }}
             >
               <Link
-                to={'/stocks'}
+                to={'/dashboard'}
                 className="bg-black text-white py-3 px-8 rounded-full hover:bg-gray-800 text-xl transition duration-300"
               >
                 Trade

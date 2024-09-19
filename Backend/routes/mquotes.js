@@ -12,7 +12,7 @@ router.post('/mquotes', async (req, res) => {
             return res.status(400).send("No symbols provided.");
         }
 
-        const quotes = await yahooFinance.quote(symbols, { fields:  ["regularMarketPrice", "currency"] });
+        const quotes = await yahooFinance.quote(symbols);
         
         if (quotes && Object.keys(quotes).length > 0) {
             res.json(quotes);

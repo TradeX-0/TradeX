@@ -18,6 +18,7 @@ import Login from './routes/Login/login.jsx';
 import AuthRoutes from './utils/AuthRoutes.jsx';
 import Verify from "./routes/verify/verify.jsx"
 import VerifyRoute from './utils/VerifyRoute.jsx';
+import Watchlist from './routes/Watchlist /watchlist.jsx';
 
 const router = createBrowserRouter([
   {
@@ -54,12 +55,16 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: '/stocks',
+        path: '/dashboard',
         element: <Stocks />,
       },
       {
         path: '/stocks/:stock',
         element: <Stock />,
+      },
+      {
+        path: '/watchlist',
+        element: <Watchlist />,
       }
     ],
   },

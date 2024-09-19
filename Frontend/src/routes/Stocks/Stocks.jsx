@@ -41,7 +41,8 @@ function Stocks() {
               individualPL = Math.abs(individualPL)
             }
             cumulativePL += individualPL; // Add this stock's P&L to the total
-            cumulativeS += order.stock_price
+            cumulativeS += (order.stock_price * order.quantity)
+            
 
           } catch (error) {
             console.error(`Error converting price for index ${i}:`, error);
@@ -129,6 +130,7 @@ function Stocks() {
     }
   }, [user]);
 
+
   return (
     <>
       <Navbar />
@@ -139,6 +141,7 @@ function Stocks() {
           <div className="stat">
             <div className="stat-title">Wallet</div>
             <div className="stat-value">{inrSymbol}{user?.wallet}</div>
+            <div className='stat-title'>Equity Investment: {inrSymbol}{totalspend.toFixed(2)}</div>
           </div>  
         </div>
         <div className="stats shadow border border-white w-[450px] p-4">
@@ -176,7 +179,7 @@ function Stocks() {
               orders.map((order, index) => (
                 <tr key={order.id}>
                   <td>{index + 1}</td>
-                  <td><Link to={`http://localhost:5173/stocks/${order.stock_name}`} >{order.stock_name}</Link></td>
+                  <td><Link to={`http://localhost:5173/stocks/${order.stock_name}`} className='text-blue-500'>{order.stock_name}</Link></td>
                   <td>{new Date(order.created_at).toLocaleString('en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -199,7 +202,7 @@ function Stocks() {
                   }`}>
                     {order.type === "BUY" ? ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) >= 0 ? '+' : '-'
                   :
-                    ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) < 0 ? '+' : '-'}{inrSymbol}{Math.abs((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2)} ({((((convertedPrices[index] - order.stock_price) * order.quantity)/convertedPrices[index])*100).toFixed(2)}%)
+                    ((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2) < 0 ? '+' : '-'}{inrSymbol}{Math.abs((convertedPrices[index] - order.stock_price) * order.quantity).toFixed(2)} ({((Math.abs((convertedPrices[index] - order.stock_price) * order.quantity)/Math.abs(order.stock_price * order.quantity))*100).toFixed(2)}%)
                   </td>
                 </tr>
               ))

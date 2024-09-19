@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import Navbar from "../../../components/navbar/Navbar";
 import getSymbolFromCurrency from 'currency-symbol-map';
 import { Converter } from "easy-currencies";
-import { getStocks } from '../../../services/stocks';
+import { addstock, getStocks, getwatchStocks, removestock } from '../../../services/stocks';
 import { getUser } from '../../../services/auth';
 import { buy, sell  } from '../../../services/functioning';
 import { close } from '../../../services/functioning';
@@ -21,10 +21,27 @@ function Stock() {
   const [user, setUser] = useState(null);
   const [order, setOrders] = useState([]);
   const [interval, setInterval] = useState('5m')
+  const [watch, setWatch] = useState([])
+  const [watchlist, setWatchList] = useState(false)
   const [cookies] = useCookies(['token']);
   const converter = new Converter();
 
   const { stock } = useParams();
+
+  useEffect(() => {
+    if (user?.id) { // Ensure user is defined and has an ID
+      const fetchwatch = async () => {
+        try {
+          const response = await getwatchStocks(user);
+          setWatch(response.length > 0 ? response : []);
+        } catch (error) {
+          console.error('Error fetching watch:', error); // Log any errors
+        }
+      };
+
+      fetchwatch();
+    }
+  }, [user]);
 
   useEffect(()=>{
     if(quantity <1){
@@ -150,6 +167,23 @@ function Stock() {
       e.preventDefault()
     }
   }
+  const handleAddToWatchlist = async () => {
+    try {
+      await addToWatchlist(user.id, data.symbol);
+      setWatchList(true);
+    } catch (error) {
+      console.error('Error adding to watchlist:', error);
+    }
+  };
+
+  const handleRemoveFromWatchlist = async () => {
+    try {
+      await removeFromWatchlist(user.id, data.symbol);
+      setWatchList(false);
+    } catch (error) {
+      console.error('Error removing from watchlist:', error);
+    }
+  };
 
   // Calculate profit/loss
   const calculateProfitLoss = () => {
@@ -168,12 +202,19 @@ function Stock() {
   };
 
   const profitLoss = calculateProfitLoss();
+  
+  useEffect(() => {
+    if (data && watch.length > 0) {
+      const isInWatchlist = watch.some(item => item.symbol === data.symbol);
+      setWatchList(isInWatchlist);
+    }
+  }, [data, watch]);
 
   return (
     <>
       <Navbar />
       
-      <Link to={"/stocks"} className="p-4 text-l font-bold">{'<'} back</Link>
+      <Link to={"/dashboard"} className="p-4 text-l font-bold">{'<'} back</Link>
 
       <div className="flex justify-between items-start space-x-4">
         {data == null ? 
@@ -211,12 +252,21 @@ function Stock() {
         </div>
         <div className='buy-sell-box'>
             <div>
-              <h2 className='flex-none text-xl font-bold'>{data?.longName}</h2>
+              <div className='flex justify-between'>
+                <h2 className='flex-none text-xl font-bold'>{data?.symbol}</h2>
+                {watchlist ? <button onClick={async()=>{
+                  await removestock(user, data?.symbol)
+                  window.location.reload()
+                }}>Remove from Watchlist</button> : <button onClick={async()=>{
+                  await addstock(user, data?.symbol)
+                  window.location.reload()
+                }}>Add to Watchlist</button>}
+              </div>
               <div className='divider'></div>
             </div>
             <div>
             <div className='flex flex-col justify-center border rounded-lg'>
-              <p className='text-center'>Analysis Rating</p>
+              <p className='text-center'>Analyst Rating</p>
               <p className='text-center font-bold'>{data?.averageAnalystRating}</p>
             </div>
             <div className='flex m-4'>
@@ -249,7 +299,7 @@ function Stock() {
                       <p className={`text-lg`}>
                         P&L
                       </p>
-                      <button className={`btn btn-active w-56 ml-32 font-semibold text-lg ${profitLoss >= 0 ? 'text-red-500' : 'text-green-500'}`}>
+                      <button className={`btn btn-active w-56 ml-32 font-semibold text-lg ${profitLoss >= 0 ? 'text-red-500' : 'text-green-400'}`}>
                       {profitLoss < 0 ? '+' : '-'}{inrSymbol}{Math.abs(profitLoss).toFixed(2)}
                       </button>
                     </div>
@@ -258,7 +308,7 @@ function Stock() {
                       <p className={`text-lg`}>
                         P&L
                       </p>
-                      <button className={`btn btn-active w-56 text-lg font-semibold ml-32 ${profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      <button className={`btn btn-active w-56 text-lg font-semibold ml-32 ${profitLoss >= 0 ? 'text-green-400' : 'text-red-500'}`}>
                         {profitLoss >= 0 ? '+' : '-'}{inrSymbol}{Math.abs(profitLoss).toFixed(2)}
                       </button>
                     </div>

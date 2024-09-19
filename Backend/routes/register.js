@@ -3,7 +3,6 @@ import supabase from "../database/supabase.js";
 import bodyParser from 'body-parser';
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
-import mail from '../components/mail.js';
 import "dotenv/config";
 
 const router = Router();

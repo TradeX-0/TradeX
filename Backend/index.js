@@ -13,6 +13,9 @@ import Buy from "./routes/buy.js"
 import Close from "./routes/close.js"
 import Sell from "./routes/sell.js"
 import mquotesRoutes from "./routes/mquotes.js"
+import watchlist from "./routes/user_watchlist.js"
+import remove from "./routes/removewatch.js"
+import add from "./routes/add.js"
 import cors from 'cors';
 
 
@@ -36,7 +39,9 @@ app.use('/api', Buy)
 app.use('/api', Close)
 app.use('/api', Sell)
 app.use('/api', mquotesRoutes)
-
+app.use('/api', watchlist)
+app.use('/api', remove)
+app.use('/api', add)
 
 app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
