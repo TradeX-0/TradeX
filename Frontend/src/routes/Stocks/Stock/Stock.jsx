@@ -333,6 +333,7 @@ function Stock() {
                         <h3 className="font-bold text-lg mb-8">{data?.shortName}</h3>
                         <div className="flex justify-between">
                           <p className='mt-4'>Quantity</p>
+                          <div>
                           <input type="number" max="5" placeholder="Qty" className="input input-bordered w-40 h-12 max-w-xs" onChange={e =>{
                             setQuantity(e.target.value)
                           }}
@@ -341,6 +342,8 @@ function Stock() {
                           min='1' 
                           step='1'
                           />
+                          <p className='text-neutral-500 text-sm mt-1'>Maximum Quantity: {Math.floor(user?.wallet/inrPrice)}</p>
+                          </div>
                         </div>
                         <div className="flex justify-between mt-4">
                           <p className='mt-4'>Market price</p>
@@ -388,14 +391,17 @@ function Stock() {
                         <h3 className="font-bold text-lg mb-8">{data?.shortName}</h3>
                         <div className="flex justify-between">
                           <p className='mt-4'>Quantity</p>
+                          <div>
                           <input type="number" max="5" placeholder="Qty" className="input input-bordered w-40 h-12 max-w-xs" onChange={e =>{
                             setQuantity(e.target.value)
                           }}
+                          value={quantity}
                           onKeyDown={handleKeypress} 
                           min='1' 
                           step='1'
-                          value={quantity}
                           />
+                          <p className='text-neutral-500 text-sm mt-1'>Maximum Quantity: {Math.floor(user?.wallet/inrPrice)}</p>
+                          </div>
                         </div>
                         <div className="flex justify-between mt-4">
                           <p className='mt-4'>Market price</p>

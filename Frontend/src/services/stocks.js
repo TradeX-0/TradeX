@@ -53,3 +53,4 @@ export const addstock = async(user, symbol)=>{
 });
 return await response.json();
 }
+
