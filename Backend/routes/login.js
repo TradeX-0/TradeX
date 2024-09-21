@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import supabase from "../database/supabase.js";
 import bodyParser from 'body-parser';
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import "dotenv/config";
 
@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
         }
 
         // Compare the provided password with the stored hashed password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = bcrypt.compareSync(password, user.password);
 
         if (!isPasswordValid) {
             return res.status(401).json({ error: "Incorrect password" });

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import supabase from "../database/supabase.js";
 import bodyParser from 'body-parser';
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import "dotenv/config";
 
@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
         }
 
         // Hash the password
-        const encPass = await bcrypt.hash(password, 10);
+        const encPass =  bcrypt.hashSync(password, 10);
 
         // Insert user into the database
         const { data, error } = await supabase
