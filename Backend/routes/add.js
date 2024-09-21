@@ -27,7 +27,7 @@ router.post('/add', async (req, res) => {
         }
 
         // Check if there are stocks
-        if (data.length === 0) {
+        if (data && data.length === 0) {
             return res.send([]); // Send an empty array if no stocks found
         } else {
             return res.send(data); // Send the fetched datazz

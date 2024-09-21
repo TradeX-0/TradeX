@@ -36,7 +36,19 @@ function Verify() {
     fetchData();
   }, []); // Dependency on cookies.token
 
-  return <p>{message}</p>; // Display the message to the user
+  return (
+    <>
+      <div className="flex justify-center max-h-screen">
+        <div className="card bg-base-200 mt-4 w-96 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title justify-center">Verify Account!</h2>
+            <p className="justify-center ml-8">{message}</p>
+          </div>
+        </div>
+      </div>
+
+    </>
+  ); // Display the message to the user
 }
 
 export default Verify;
