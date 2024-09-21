@@ -27,7 +27,7 @@ async function mail(email, token) {
       html: `
         <h1 style="text-align: center;">Final step...</h1><br>
         <p style="text-align: center;">Follow this link to verify your email address.</p><br>
-        <a href="http://localhost:5173/email_verification/${ token }" target="_blank" style="display: flex; text-align: center; padding: 12px 24px; border-radius: 4px; color: white; background: black; display: inline-block; margin: 0.5rem 0;">Confirm now</a><br>
+        <a href="/email_verification/${ token }" target="_blank" style="display: flex; text-align: center; padding: 12px 24px; border-radius: 4px; color: white; background: black; display: inline-block; margin: 0.5rem 0;">Confirm now</a><br>
         <p style="text-align: center;">If you didn't ask to verify this address, you can ignore this email.</p><br>
         <p style="text-align: center;">Thanks,<br>The TradeX team</p>
       `, // HTML body

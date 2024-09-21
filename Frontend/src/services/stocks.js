@@ -1,7 +1,7 @@
 
 
 export const getStocks = async(user)=>{
-    const response = await fetch("http://localhost:3000/api/user-stocks", {
+    const response = await fetch("https://tradex-101.onrender.com/api/user-stocks", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,7 +14,7 @@ export const getStocks = async(user)=>{
 }
 
 export const getwatchStocks = async(user)=>{
-  const response = await fetch("http://localhost:3000/api/user-watchlist", {
+  const response = await fetch("https://tradex-101.onrender.com/api/user-watchlist", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -27,7 +27,7 @@ return await response.json();
 }
 
 export const removestock = async(user, symbol)=>{
-  const response = await fetch("http://localhost:3000/api/remove", {
+  const response = await fetch("https://tradex-101.onrender.com/api/remove", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -41,7 +41,7 @@ return await response.json();
 }
 
 export const addstock = async(user, symbol)=>{
-  const response = await fetch("http://localhost:3000/api/add", {
+  const response = await fetch("https://tradex-101.onrender.com/api/add", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

@@ -88,7 +88,7 @@ function Watchlist() {
               }
             });
     
-            const response = await fetch(`http://localhost:3000/api/mquotes`, {
+            const response = await fetch(`https://tradex-101.onrender.com/api/mquotes`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -158,8 +158,8 @@ function Watchlist() {
               watchData.map((watch, index) => (
                   <tr key={watch.id || `${watch.symbol}-${index}`}>
                   <td>{index + 1}</td>
-                  <td><Link to={`http://localhost:5173/stocks/${watch.symbol}`} className='text-blue-500'>{watch.symbol}</Link></td>
-                  <td><Link to={`http://localhost:5173/stocks/${watch.symbol}`} className='text-blue-500'>{watch.longName}</Link></td>
+                  <td><Link to={`/stocks/${watch.symbol}`} className='text-blue-500'>{watch.symbol}</Link></td>
+                  <td><Link to={`/stocks/${watch.symbol}`} className='text-blue-500'>{watch.longName}</Link></td>
                   <td>{inrSymbol}{convertedprices[index] ? (convertedprices[index]).toFixed(2) : "Null"}</td>
                   <td><a className={watch.regularMarketChangePercent > 0 ? "bg-green-800 text-green-400 font-semibold px-2 py-1 rounded w-8" : "bg-red-800 text-orange-400 font-semibold px-2 py-1 rounded w-8"}>{watch.regularMarketChangePercent > 0 ? "+" : ""}{(watch.regularMarketChangePercent).toFixed(2)}%</a></td>
                   <td>{watch.averageAnalystRating ? watch.averageAnalystRating : <p className="ml-8">-</p>}</td>
