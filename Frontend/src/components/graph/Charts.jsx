@@ -38,13 +38,13 @@ function Chart({interval}) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://tradex-101.onrender.com/api/stock-price/${stock}/${interval}`);
+        const response = await fetch(`https://trade-x-ux6n.vercel.app/api/stock-price/${stock}/${interval}`);
         if (!response.ok) {
           throw new Error('Failed to fetch stock price data');
         }
         const result = await response.json();
         
-        const priceResponse = await fetch(`https://tradex-101.onrender.com/api/current-stock-price/${stock}`);
+        const priceResponse = await fetch(`https://trade-x-ux6n.vercel.app/api/current-stock-price/${stock}`);
         if (!priceResponse.ok) {
           throw new Error('Failed to fetch current stock price');
         }

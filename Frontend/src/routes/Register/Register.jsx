@@ -95,7 +95,7 @@ function Register() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://tradex-101.onrender.com/api/register", {
+      const response = await fetch("https://trade-x-ux6n.vercel.app/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

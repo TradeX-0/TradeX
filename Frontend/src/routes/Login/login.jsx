@@ -32,7 +32,7 @@ function Login() {
     e.preventDefault(); // Prevents the default form submission behavior
 
     try {
-      const response = await fetch("https://tradex-101.onrender.com/api/login", {
+      const response = await fetch("https://trade-x-ux6n.vercel.app/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

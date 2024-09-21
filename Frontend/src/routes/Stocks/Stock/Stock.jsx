@@ -126,7 +126,7 @@ function Stock() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://tradex-101.onrender.com/api/quotes/${stock}`);
+        const response = await fetch(`https://trade-x-ux6n.vercel.app/api/quotes/${stock}`);
         const result = await response.json();
 
         setData(result);

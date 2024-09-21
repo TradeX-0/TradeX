@@ -1,7 +1,7 @@
 
 
 export const close = async(symbol, id, balance) =>{
-    const response = await fetch(`https://tradex-101.onrender.com/api/close`,{
+    const response = await fetch(`https://trade-x-ux6n.vercel.app/api/close`,{
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export const close = async(symbol, id, balance) =>{
 }
 
 export const buy = async(symbol, quantity, price, id, balance)=>{
-        const response = await fetch(`https://tradex-101.onrender.com/api/buy`,{
+        const response = await fetch(`https://trade-x-ux6n.vercel.app/api/buy`,{
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const buy = async(symbol, quantity, price, id, balance)=>{
 }
 
 export const sell = async(symbol, quantity, price, id, balance)=>{
-    const response = await fetch(`https://tradex-101.onrender.com/api/sell`,{
+    const response = await fetch(`https://trade-x-ux6n.vercel.app/api/sell`,{
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -88,7 +88,7 @@ function Watchlist() {
               }
             });
     
-            const response = await fetch(`https://tradex-101.onrender.com/api/mquotes`, {
+            const response = await fetch(`https://trade-x-ux6n.vercel.app/api/mquotes`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",

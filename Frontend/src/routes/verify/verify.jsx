@@ -13,7 +13,7 @@ function Verify() {
       }
 
       try {
-        const response = await fetch(`https://tradex-101.onrender.com/api/verify-link/${cookies.token}`);
+        const response = await fetch(`https://trade-x-ux6n.vercel.app/api/verify-link/${cookies.token}`);
         
         // Check if the response is not okay
         if (!response.ok) {
