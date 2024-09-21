@@ -1,7 +1,7 @@
 
 
 export const getStocks = async(user)=>{
-    const response = await fetch("https://trade-x-ux6n.vercel.app/api/user-stocks", {
+    const response = await fetch("http://localhost:3000/api/user-stocks", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,7 +14,7 @@ export const getStocks = async(user)=>{
 }
 
 export const getwatchStocks = async(user)=>{
-  const response = await fetch("https://trade-x-ux6n.vercel.app/api/user-watchlist", {
+  const response = await fetch("http://localhost:3000/api/user-watchlist", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -27,7 +27,7 @@ return await response.json();
 }
 
 export const removestock = async(user, symbol)=>{
-  const response = await fetch("https://trade-x-ux6n.vercel.app/api/remove", {
+  const response = await fetch("http://localhost:3000/api/remove", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -41,7 +41,7 @@ return await response.json();
 }
 
 export const addstock = async(user, symbol)=>{
-  const response = await fetch("https://trade-x-ux6n.vercel.app/api/add", {
+  const response = await fetch("http://localhost:3000/api/add", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

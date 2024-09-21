@@ -73,7 +73,7 @@ function Stocks() {
           }
         });
 
-        const response = await fetch(`https://trade-x-ux6n.vercel.app/api/mquotes`, {
+        const response = await fetch(`http://localhost:3000/api/mquotes`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

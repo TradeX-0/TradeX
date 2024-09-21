@@ -12,7 +12,7 @@ function Email_verify() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://trade-x-ux6n.vercel.app/api/email_verify/${token}`);
+        const response = await fetch(`http://localhost:3000/api/email_verify/${token}`);
         if (!response.ok && response.status(401)) {  
           throw new Error('Network response was not ok');
         }
