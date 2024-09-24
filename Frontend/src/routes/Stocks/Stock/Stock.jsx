@@ -11,6 +11,7 @@ import { buy, sell  } from '../../../services/functioning';
 import { close } from '../../../services/functioning';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 function Stock() {
   const [data, setData] = useState(null);
@@ -41,7 +42,7 @@ function Stock() {
 
       fetchwatch();
     }
-  }, [user]);
+  }, [user, watch]);
 
   useEffect(()=>{
     if(quantity <1){
@@ -72,8 +73,19 @@ function Stock() {
     if (user?.id && quantity > 0) {
       let balance = user?.wallet - (quantity*inrPrice)
       try {
-        const response = await buy(data.symbol, quantity, inrPrice, user.id, balance);
-        window.location.reload();
+        const response = await buy(data.symbol, data.shortName, quantity, inrPrice, user.id, balance);
+        toast.success("Purchase successful!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        setUser(prevUser => ({ ...prevUser, wallet: balance }));
+        setQuantity("")
         console.log(response);
       } catch (error) {
         console.log(error);
@@ -82,24 +94,58 @@ function Stock() {
   };
   const handleSellStock = async () => {
     if (user?.id && quantity > 0) {
-      let balance = user?.wallet - (quantity*inrPrice)
+      let balance = user.wallet - (quantity * inrPrice);
       try {
         const response = await sell(data.symbol, quantity, inrPrice, user.id, balance);
-        window.location.reload();
+        toast.success("Purchase successful!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+        // Example: Update state instead of reloading
+        setUser(prevUser => ({ ...prevUser, wallet: balance }));
+        
+        setQuantity("")
         console.log(response);
       } catch (error) {
-        console.log(error);
+        console.error(error);
+        toast.error("Purchase failed. Please try again.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
     }
-  };
+  }
   const Handleclose = async () => {
     if (user?.id) {
       const userStock = order.find(item => item.stock_name === stock);
       if(userStock){
         let balance = user?.wallet + (userStock.stock_price * userStock.quantity) + calculateProfitLoss()
         try {
-          const response = await close(data.symbol, user.id, balance);
-          window.location.reload();
+          const response = await close(data.symbol, user.id, balance, data.shortName, userStock.quantity, userStock.stock_price, inrPrice, userStock.type);
+          toast.success("Closed successfully!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          setQuantity("")
+          setUser(prevUser => ({ ...prevUser, wallet: balance }));
           console.log(response);
         } catch (error) {
           console.log(error);
@@ -166,24 +212,37 @@ function Stock() {
     } else {
       e.preventDefault()
     }
+    
   }
-  const handleAddToWatchlist = async () => {
+  const handleAddStock = async () => {
     try {
-      await addToWatchlist(user.id, data.symbol);
-      setWatchList(true);
+        await addstock(user, data?.symbol);
+        // Update watch state by adding the new stock
+        setWatch(prevWatch => [...prevWatch, { id: user.id, symbol: data.symbolv}]); // Adjust based on your stock structure
+        toast.success("Added to Watchlist!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     } catch (error) {
-      console.error('Error adding to watchlist:', error);
+        console.error('Error adding stock:', error);
+        toast.error("Failed to add to Watchlist.", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     }
-  };
-
-  const handleRemoveFromWatchlist = async () => {
-    try {
-      await removeFromWatchlist(user.id, data.symbol);
-      setWatchList(false);
-    } catch (error) {
-      console.error('Error removing from watchlist:', error);
-    }
-  };
+};
 
   // Calculate profit/loss
   const calculateProfitLoss = () => {
@@ -218,18 +277,7 @@ function Stock() {
           to="/dashboard" 
           className="p-2 ml-4 text-lg font-semibold bg-base-300 text-white rounded-lg shadow hover:bg-base-200 transition duration-300 ease-in-out inline-flex items-center"
         >
-          <svg className="mr-2" fill="#000000" height="25px" width="25px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-            viewBox="0 0 219.151 219.151" xml:space="preserve">
-          <g>
-            <path d="M109.576,219.151c60.419,0,109.573-49.156,109.573-109.576C219.149,49.156,169.995,0,109.576,0S0.002,49.156,0.002,109.575
-              C0.002,169.995,49.157,219.151,109.576,219.151z M109.576,15c52.148,0,94.573,42.426,94.574,94.575
-              c0,52.149-42.425,94.575-94.574,94.576c-52.148-0.001-94.573-42.427-94.573-94.577C15.003,57.427,57.428,15,109.576,15z"/>
-            <path d="M94.861,156.507c2.929,2.928,7.678,2.927,10.606,0c2.93-2.93,2.93-7.678-0.001-10.608l-28.82-28.819l83.457-0.008
-              c4.142-0.001,7.499-3.358,7.499-7.502c-0.001-4.142-3.358-7.498-7.5-7.498l-83.46,0.008l28.827-28.825
-              c2.929-2.929,2.929-7.679,0-10.607c-1.465-1.464-3.384-2.197-5.304-2.197c-1.919,0-3.838,0.733-5.303,2.196l-41.629,41.628
-              c-1.407,1.406-2.197,3.313-2.197,5.303c0.001,1.99,0.791,3.896,2.198,5.305L94.861,156.507z"/>
-          </g>
-          </svg> Back
+          {"<"} Back
         </Link>
 
       <div className="flex justify-between items-start space-x-4">
@@ -246,7 +294,7 @@ function Stock() {
         <div className="stats shadow border border-white w-[350px] p-4">
           <div className="stat">
             <div className="stat-title">Wallet</div>
-            <div className="stat-value">{inrSymbol}{user?.wallet}</div>
+            <div className="stat-value">{inrSymbol}{user?.wallet ? (user.wallet).toFixed(2): ""}</div>
           </div>
         </div>
       </div>
@@ -272,11 +320,18 @@ function Stock() {
                 <h2 className='flex-none text-xl font-bold'>{data?.symbol}</h2>
                 {watchlist ? <button onClick={async()=>{
                   await removestock(user, data?.symbol)
-                  window.location.reload()
-                }}>Remove from Watchlist</button> : <button onClick={async()=>{
-                  await addstock(user, data?.symbol)
-                  window.location.reload()
-                }}>Add to Watchlist</button>}
+                  setWatch(prevWatch => ({ ...prevWatch }));
+                  toast.error("Removed from Watchlist!", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  });
+                }}>Remove from Watchlist</button> : <button onClick={handleAddStock}>Add to Watchlist</button>}
               </div>
               <div className='divider'></div>
             </div>

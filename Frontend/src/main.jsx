@@ -19,6 +19,7 @@ import AuthRoutes from './utils/AuthRoutes.jsx';
 import Verify from "./routes/verify/verify.jsx"
 import VerifyRoute from './utils/VerifyRoute.jsx';
 import Watchlist from './routes/Watchlist /watchlist.jsx';
+import Transactions from './routes/transactions/transactions.jsx';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
       {
         path: '/watchlist',
         element: <Watchlist />,
+      },
+      {
+        path: '/transactions',
+        element: <Transactions />
       }
     ],
   },

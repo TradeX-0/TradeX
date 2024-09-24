@@ -16,6 +16,8 @@ import mquotesRoutes from "./routes/mquotes.js"
 import watchlist from "./routes/user_watchlist.js"
 import remove from "./routes/removewatch.js"
 import add from "./routes/add.js"
+import transactions from "./routes/transactions.js"
+import sendHistory from "./routes/send-history.js"
 import cors from 'cors';
 
 
@@ -42,6 +44,8 @@ app.use('/api', mquotesRoutes)
 app.use('/api', watchlist)
 app.use('/api', remove)
 app.use('/api', add)
+app.use('/api', transactions)
+app.use('/api', sendHistory)
 
 app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);

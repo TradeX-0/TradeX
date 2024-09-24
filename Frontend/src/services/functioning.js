@@ -1,6 +1,6 @@
 
 
-export const close = async(symbol, id, balance) =>{
+export const close = async(symbol, id, balance, stock_name, quantity, price, close_price, type) =>{
     const response = await fetch(`http://localhost:3000/api/close`,{
         method: "POST",
         headers: {
@@ -9,13 +9,18 @@ export const close = async(symbol, id, balance) =>{
           body: JSON.stringify({
             id: id,
             symbol: symbol,
-            balance: balance
+            balance: balance,
+            stock_name: stock_name,
+            quantity: quantity,
+            price: price,
+            close_price: close_price,
+            type: type
           }),
     });
     console.log(response.json())
 }
 
-export const buy = async(symbol, quantity, price, id, balance)=>{
+export const buy = async(symbol, stock_name, quantity, price, id, balance)=>{
         const response = await fetch(`http://localhost:3000/api/buy`,{
             method: "POST",
             headers: {
@@ -24,6 +29,7 @@ export const buy = async(symbol, quantity, price, id, balance)=>{
               body: JSON.stringify({
                 id: id,
                 symbol: symbol,
+                stock_name: stock_name,
                 quantity: quantity,
                 price: price,
                 balance: balance

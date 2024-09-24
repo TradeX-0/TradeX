@@ -7,9 +7,14 @@ const router = Router();
 router.use(bodyParser.json());
 
 router.post('/close', async (req, res) => {
-    const { id, symbol, balance } = req.body; // Get data from request body
+    const { id, symbol, balance, stock_name, price, quantity, close_price, type} = req.body; // Get data from request body
     try {
-
+        let PL
+        if(type == "BUY"){
+            PL = ((close_price - price)*quantity).toFixed(2) 
+        } else{
+            PL = ((price - close_price)*quantity).toFixed(2)
+        }
         // Update the user's balance
         const { error: balanceError } = await supabase
             .from('users')
@@ -34,7 +39,28 @@ router.post('/close', async (req, res) => {
             console.error('Error inserting stocks:', stockError);
             return res.status(500).json({ error: 'Error buying stocks' });
         }
+        
 
+
+        const { error: transactionserror } = await supabase
+            .from('transactions')
+            .insert([
+                {
+                    "user_id": id,
+                    "symbol": symbol,
+                    "stock_name": stock_name,
+                    "type": "BUY",
+                    "open_price": price,
+                    "close_price": close_price,
+                    "quantity": quantity,
+                    "total": (price*quantity).toFixed(2),
+                    "PL": PL
+                }
+            ]);
+            if (transactionserror) {
+                console.error('Error inserting stocks:', quantity);
+                return res.status(500).json({ error: 'Error buying stocks' });
+            }
         
 
         return res.json({ response: 'Stock purchased successfully', stockData });

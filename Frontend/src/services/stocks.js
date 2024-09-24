@@ -54,3 +54,16 @@ export const addstock = async(user, symbol)=>{
 return await response.json();
 }
 
+
+export const gettransaction = async(user)=>{
+  const response = await fetch("http://localhost:3000/api/transactions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    id: user.id
+  }),
+});
+return await response.json();
+}

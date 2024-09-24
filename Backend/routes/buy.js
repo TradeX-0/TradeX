@@ -38,6 +38,8 @@ router.post('/buy', async (req, res) => {
             return res.status(500).json({ error: 'Failed to update user balance' });
         }
 
+        
+
         return res.json({ response: 'Stock purchased successfully', stockData });
     } catch (error) {
         console.error('Internal server error:', error);
