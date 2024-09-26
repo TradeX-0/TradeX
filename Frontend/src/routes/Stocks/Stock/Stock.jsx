@@ -86,7 +86,6 @@ function Stock() {
         });
         setUser(prevUser => ({ ...prevUser, wallet: balance }));
         setQuantity("")
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -111,7 +110,6 @@ function Stock() {
         setUser(prevUser => ({ ...prevUser, wallet: balance }));
         
         setQuantity("")
-        console.log(response);
       } catch (error) {
         console.error(error);
         toast.error("Purchase failed. Please try again.", {

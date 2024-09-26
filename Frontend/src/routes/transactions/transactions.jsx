@@ -109,7 +109,19 @@ const generatePDF = async () => {
         </Link>
         <br />
         <div className="flex justify-between">
-        <h2 className="text-3xl font-bold ml-8 mt-8 text-white">Transactions history</h2>
+          <div>
+            <h2 className="text-3xl font-bold ml-8 mt-8 text-white">Transactions history</h2>
+            <p className="ml-8 text-lg text-neutral-500">{Transaction.length} Stocks</p>
+            {Transaction.length > 0 && <p className="ml-8 text-lg text-neutral-500">Updated on {new Date(Transaction[Transaction.length - 1]?.created_at).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                  })}</p>}
+          </div>
+        
         <button className="btn btn-active mt-12 mr-8" onClick={()=>document.getElementById('send_email').showModal()}>Send PDF via Email</button>
         <dialog id="send_email" className="modal">
         <div className="modal-box">
@@ -152,15 +164,7 @@ const generatePDF = async () => {
         </form>
         </dialog>
         </div>
-        <p className="ml-8 text-lg text-neutral-500">{Transaction.length} Stocks</p>
-        {Transaction.length > 0 && <p className="ml-8 text-lg text-neutral-500">Updated on {new Date(Transaction[Transaction.length - 1]?.created_at).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: true
-                  })}</p>}
+        
         <br />
         <div className="overflow-x-auto">
         <table id="transaction-table" className="table table-pin-rows table-pin-cols">
